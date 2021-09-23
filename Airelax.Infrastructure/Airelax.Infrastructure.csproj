@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BCrypt.Net" Version="0.1.0" />
+      <PackageReference Include="CloudinaryDotNet" Version="1.15.2" />
+      <PackageReference Include="Lazcat.Infrastructure" Version="1.0.9" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

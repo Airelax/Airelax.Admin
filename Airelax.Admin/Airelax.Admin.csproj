@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Airelax.Domain\Airelax.Domain.csproj" />
+      <ProjectReference Include="..\Airelax.EntityFramework\Airelax.EntityFramework.csproj" />
+      <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services" />
+    </ItemGroup>
+
+</Project>
