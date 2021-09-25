@@ -34,6 +34,10 @@ namespace Airelax.EntityFramework.Repositories
 
             return trips;
         }
+        public IQueryable<Order> GetAll()
+        {
+            return GetOrderIncludeAll();
+        }
 
         //public Order GetOrder(string houseId)
         //{
@@ -54,7 +58,7 @@ namespace Airelax.EntityFramework.Repositories
         {
             _context.Orders.Update(order);
         }
-        
+
         public void Add(Order order)
         {
             _context.Orders.Add(order);
@@ -65,13 +69,18 @@ namespace Airelax.EntityFramework.Repositories
             _context.SaveChanges();
         }
 
+        public void Delete(Order order)
+        {
+            _context.Orders.Remove(order);
+        }
+
         private IIncludableQueryable<Order, Member> GetOrderIncludeAll()
         {
-            return _context.Orders.Include(x=>x.OrderDetail)
-                .Include(x=>x.OrderPriceDetail)
-                .Include(x=>x.Payment)
-                .Include(x=>x.House)
-                .Include(x=>x.Member);
+            return _context.Orders.Include(x => x.OrderDetail)
+                .Include(x => x.OrderPriceDetail)
+                .Include(x => x.Payment)
+                .Include(x => x.House)
+                .Include(x => x.Member);
         }
     }
 }
