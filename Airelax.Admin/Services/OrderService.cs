@@ -24,7 +24,7 @@ namespace Airelax.Domain
             _orderRepository = orderRepository;
         }
 
-        public async void DeleteOrder(OrderIdInput input)
+        public async Task DeleteOrder(OrderIdInput input)
         {
             var order = await _orderRepository.GetOrderAsync(x => x.Id == input.OrderId);
             CheckOrderId(order);

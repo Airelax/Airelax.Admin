@@ -1,6 +1,7 @@
 ﻿using Airelax.Admin.Models;
 using Airelax.Domain;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Airelax.Admin.Controllers
 {
@@ -15,9 +16,9 @@ namespace Airelax.Admin.Controllers
             _orderService = orderService;
         }
         [HttpDelete]
-        public bool DeleteOrderId(OrderIdInput input)
+        public async Task<bool> DeleteOrderId(OrderIdInput input)
         {
-            _orderService.DeleteOrder(input);
+            await _orderService.DeleteOrder(input);
             return true;
         }
 

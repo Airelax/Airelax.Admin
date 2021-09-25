@@ -1,9 +1,10 @@
 ﻿using Airelax.Admin.Models;
+using System.Threading.Tasks;
 
 namespace Airelax.Domain
 {
     public interface IOrderService
     {
-        void DeleteOrder(OrderIdInput input);
+        Task DeleteOrder(OrderIdInput input);
     }
 }
