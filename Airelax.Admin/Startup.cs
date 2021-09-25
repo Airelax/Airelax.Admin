@@ -34,6 +34,7 @@ namespace Airelax.Admin
             if (HostEnvironment.IsDevelopment())
             {
                 connectString = Define.Database.LOCAL_CONNECT_STRING;
+                connectString = Define.Database.DB_CONNECT_STRING;
                 services.AddCors(opt => { opt.AddPolicy("dev", builder => builder.WithOrigins("http://localhost:8080").AllowCredentials().AllowAnyHeader()); });
             }
             else

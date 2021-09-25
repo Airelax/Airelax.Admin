@@ -4,14 +4,16 @@ using Airelax.EntityFramework.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Airelax.EntityFramework.Migrations
 {
     [DbContext(typeof(AirelaxContext))]
-    partial class AirelaxContextModelSnapshot : ModelSnapshot
+    [Migration("20210925150037_soft-delete-order")]
+    partial class softdeleteorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

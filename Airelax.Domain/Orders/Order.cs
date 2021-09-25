@@ -27,6 +27,7 @@ namespace Airelax.Domain.Orders
         public DateTime OrderDate { get; set; }
         public DateTime LastModifyTime { get; set; }
         public OrderState State { get; set; }
+        public bool IsDeleted { get; set; }
 
         public House House { get; set; }
         public Member Member { get; set; }
