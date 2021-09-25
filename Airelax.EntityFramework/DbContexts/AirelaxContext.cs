@@ -297,7 +297,9 @@ namespace Airelax.EntityFramework.DbContexts
             {
                 builder.SetEntityKey<Order, string>();
                 builder.SetEnumDbMapping(x => x.State);
-
+                builder.Property(x => x.IsDeleted).IsRequired();
+                
+                
                 builder.HasOne(x => x.Member).WithMany(x => x.Orders).HasForeignKey(x => x.CustomerId).IsRequired();
                 builder.HasOne(x => x.House).WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.HouseId).IsRequired();
             });
