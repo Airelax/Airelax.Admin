@@ -20,17 +20,17 @@ namespace Airelax.Admin.Controllers
 
         [HttpGet]
         [Route("GetAllMembers")]//https://localhost:44305/api/Houses/GetAllMembers
-        public IQueryable<Member> GetMembers()
+        public int GetMembers()
         {
-            return _memberRepository.GetAll();
+            return _memberRepository.GetAll().Count();
         }
 
 
         [HttpGet]
         [Route("GetAllHouses")]//https://localhost:44305/api/Houses/GetAllHouses
-        public IQueryable<House> GetHouses()
+        public int GetHouses()
         {
-            return _houseRepository.GetAll();
+            return _houseRepository.GetAll().Count();
         }
 
     }
