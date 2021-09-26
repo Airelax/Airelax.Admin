@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Airelax.EntityFramework;
 using Airelax.EntityFramework.DbContexts;
+using Lazcat.Infrastructure.ExceptionHandlers;
 using Lazcat.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -76,6 +77,8 @@ namespace Airelax.Admin
             }
 
             app.UseHttpsRedirection();
+            
+            app.UseExceptionHandler(builder => builder.Run(async context => await ExceptionHandler.HandleError(context)));
             app.UseStaticFiles();
 
             app.UseOpenApi();
