@@ -22,6 +22,7 @@ namespace Airelax.EntityFramework.Repositories
         {
             _context = context;
         }
+
         public async Task<IEnumerable<Order>> GetTrips(string memberId)
         {
             var trips = await _context.Orders
@@ -30,7 +31,7 @@ namespace Airelax.EntityFramework.Repositories
                 .ThenInclude(x => x.HouseLocation)
                 .Include(x => x.House)
                 .ThenInclude(x => x.Photos)
-                .Where(x => x.CustomerId == memberId).ToListAsync();
+                .Where(x => x.CustomerId == memberId && !x.IsDeleted).ToListAsync();
 
             return trips;
         }
@@ -47,7 +48,7 @@ namespace Airelax.EntityFramework.Repositories
 
         public async Task<Order> GetOrderAsync(Expression<Func<Order, bool>> expression)
         {
-            return await GetOrderIncludeAll().FirstOrDefaultAsync(expression);
+            return await GetOrderIncludeAll().Where(x => !x.IsDeleted).FirstOrDefaultAsync(expression);
         }
 
         public void Update(Order order)
@@ -73,11 +74,6 @@ namespace Airelax.EntityFramework.Repositories
                 .Include(x => x.House)
                 .Include(x => x.Member);
         }
-
-        public void GetRevenue()
-        {
-            //去資料庫裡1.拿一堆收入2.拿一堆銷售額
-            //回傳
-        }
+        
     }
 }
