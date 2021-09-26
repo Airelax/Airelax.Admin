@@ -54,7 +54,7 @@ namespace Airelax.EntityFramework.Repositories
         {
             _context.Orders.Update(order);
         }
-        
+
         public void Add(Order order)
         {
             _context.Orders.Add(order);
@@ -67,11 +67,17 @@ namespace Airelax.EntityFramework.Repositories
 
         private IIncludableQueryable<Order, Member> GetOrderIncludeAll()
         {
-            return _context.Orders.Include(x=>x.OrderDetail)
-                .Include(x=>x.OrderPriceDetail)
-                .Include(x=>x.Payment)
-                .Include(x=>x.House)
-                .Include(x=>x.Member);
+            return _context.Orders.Include(x => x.OrderDetail)
+                .Include(x => x.OrderPriceDetail)
+                .Include(x => x.Payment)
+                .Include(x => x.House)
+                .Include(x => x.Member);
+        }
+
+        public void GetRevenue()
+        {
+            //去資料庫裡1.拿一堆收入2.拿一堆銷售額
+            //回傳
         }
     }
 }
