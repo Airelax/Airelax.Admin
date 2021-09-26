@@ -16,6 +16,6 @@ namespace Airelax.Domain.RepositoryInterface
         void Update(Order order);
         Task<IEnumerable<Order>> GetTrips(string memberId);
         IQueryable<Order> GetAll();
-        void Delete(Order order);
+        void DeleteOrder(Order order);
     }
 }

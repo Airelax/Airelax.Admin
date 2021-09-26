@@ -15,17 +15,11 @@ namespace Airelax.Admin.Controllers
         {
             _orderService = orderService;
         }
-        [HttpDelete]
-        public async Task<bool> DeleteOrderId(OrderIdInput input)
+        [HttpPost]
+        public async Task<bool> UpdateOrderId(OrderIdInput input)
         {
             await _orderService.DeleteOrder(input);
             return true;
-        }
-
-        [HttpGet]
-        public IActionResult AAA()
-        {
-            return Ok();
         }
     }
 }

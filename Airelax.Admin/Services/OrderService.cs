@@ -1,6 +1,7 @@
 ﻿using Airelax.Admin.Models;
 using Airelax.Domain.Orders;
 using Airelax.Domain.RepositoryInterface;
+using Airelax.Infrastructure.Helpers;
 using Lazcat.Infrastructure.DependencyInjection;
 using Lazcat.Infrastructure.ExceptionHandlers;
 using Microsoft.AspNetCore.Authorization;
@@ -18,17 +19,29 @@ namespace Airelax.Domain
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IHouseRepository _houseRepository;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IHouseRepository houseRepository)
         {
             _orderRepository = orderRepository;
+            _houseRepository = houseRepository;
         }
 
         public async Task DeleteOrder(OrderIdInput input)
         {
             var order = await _orderRepository.GetOrderAsync(x => x.Id == input.OrderId);
             CheckOrderId(order);
-            _orderRepository.Delete(order);
+            var endDate = order.OrderDetail.EndDate;
+
+            var house = await _houseRepository.GetAsync(x => x.Id == order.HouseId);
+
+            var dateRange = DateTimeHelper.GetDateRange(order.OrderDetail.StartDate, order.OrderDetail.EndDate);
+            house.ReservationDates = house.ReservationDates.Except(dateRange).ToList();
+
+            await _houseRepository.UpdateAsync(house);
+            _orderRepository.DeleteOrder(order);
+
+            await _houseRepository.SaveChangesAsync();
             _orderRepository.SaveChanges();
         }
 
@@ -37,11 +50,12 @@ namespace Airelax.Domain
         /// </summary>
         /// <param name="order"></param>
         /// <returns></returns>
-        private bool CheckOrderId(Order order)
+        private void CheckOrderId(Order order)
         {
             if (order == null)
                 throw ExceptionBuilder.Build(HttpStatusCode.BadRequest, "doesnt match OrderId");
-            return true;
+            else if (order.IsDeleted)
+                throw ExceptionBuilder.Build(HttpStatusCode.BadRequest, "doesnt match OrderId");
         }
     }
 }

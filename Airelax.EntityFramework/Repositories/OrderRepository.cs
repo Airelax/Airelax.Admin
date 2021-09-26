@@ -69,9 +69,10 @@ namespace Airelax.EntityFramework.Repositories
             _context.SaveChanges();
         }
 
-        public void Delete(Order order)
+        public void DeleteOrder(Order order)
         {
-            _context.Orders.Remove(order);
+            order.IsDeleted = true;
+            Update(order);
         }
 
         private IIncludableQueryable<Order, Member> GetOrderIncludeAll()
