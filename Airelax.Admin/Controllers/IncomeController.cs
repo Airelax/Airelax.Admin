@@ -6,5 +6,17 @@ namespace Airelax.Admin.Controllers
     [Route("api/[controller]")]
     public class IncomeController : Controller
     {
+        public IActionResult RevenueBeforeNow()
+        {
+            return View();
+        }
+        public IActionResult RevenueDuringWeek()
+        {
+            return View();
+        }
+        public IActionResult SalesDuringMonth()
+        {
+            return View();
+        }
     }
 }

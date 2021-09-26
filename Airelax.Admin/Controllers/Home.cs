@@ -6,10 +6,10 @@ namespace Airelax.Admin.Controllers
     public class HomeController : Controller
     {
         // GET
-        public OrdersController _ordersController;
-        public HomeController(OrdersController ordersController)
+      
+        public HomeController()
         {
-            _ordersController = ordersController;
+        
         }
         public IActionResult Index()
         {
