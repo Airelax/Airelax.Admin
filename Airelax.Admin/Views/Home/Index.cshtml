@@ -153,3 +153,86 @@
     @* *@
     @* </div> *@
 </div>
+
+@section Scripts{ 
+    <script>
+        //import axios from "../axios";
+
+        //export default {
+        //    //created() {
+        //    //    axios("/api/Houses/GetAllHouses", {
+        //    //        method: "GET",
+        //    //        headers: {
+        //    //            "Content-Type": "application/json",
+        //    //        },
+        //    //        data:"",
+        //    //    }).then(res => {
+        //    //        console.log(res);
+        //    //    })
+        //    //},
+        //    data() {
+        //        return {
+        //            houseCount:"NaN"
+        //        }
+        //    },
+        //    methods: {
+        //        houseCount: function () {
+        //            var houseCountApi = "/api/Houses/GetAllHouses";
+        //            axios({
+        //                method: "Get",
+        //                url: houseCountApi,
+        //                headers: {
+        //                    "Content-Type": "application/json",
+        //                },
+        //                data:""
+        //            })
+        //                .then(res => {
+        //                    console.log(res.data);
+                            
+        //                })
+        //                .catch(error => {
+        //                    console.log(error)
+        //                })
+        //        }
+        //    },
+        //    mounted() {
+        //        this.houseCount()
+        //    }
+        //}
+
+        
+        //var getAllHousesCount = Vue.createApp({
+        //    data() {
+        //        return {
+        //            responsedata: ""
+        //        };
+        //    },
+        //    methods: {
+        //        fetchApi() {
+        //            axios.get(GetAllHousesAPI)
+        //                .then((response) => {
+        //                    console.log(response);
+        //                })
+        //                .catch((error) => {
+        //                    console.log(error)
+        //                })
+        //        }
+        //    },
+        //    mounted: function () {
+        //        this.fetchApi();
+        //    }
+        //})
+
+        //getAllHousesCount.mount('#allHouses')
+
+        var houseCountApi = "/api/Houses/GetAllHouses";
+
+        axios.get(houseCountApi)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    </script>
+}
