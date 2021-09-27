@@ -31,9 +31,10 @@
                         <i class="material-icons">store</i>
                     </div>
                     <p class="card-category">收入</p>
-                    <h3 class="card-title">
+                    <h3 id="incomeBeforeAWeek" class="card-title">
                         @* todo vue bind *@
                         $34,245
+                        {{IncomeBeforeAWeek}}
                     </h3>
                 </div>
                 <div class="card-footer">
@@ -154,16 +155,18 @@
     @* </div> *@
 </div>
 
-@section Scripts{ 
+@section Scripts{
     <script>
 
         let json = {
             count: [
                 { houseCount: "NaN" },
-                {memberCount:"NaN"},
+                { memberCount: "NaN" },
+            ],
+            income: {
 
-            ]
-            
+            }
+
 
         }
         function LoadHouseData() {
@@ -174,7 +177,7 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response)
-                    
+
                     json.count[0] = response
                     HouseCountBinding()
                 }
@@ -196,11 +199,23 @@
             });
         }
 
-
+        function LoadIncomeData() {
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+            $.ajax({
+                type: "Get",
+                url: `/api/Income/${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}/${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`,
+                data: "",
+                dataType: "json",
+                success: function (response) {
+                    json.income = response
+                    IncomeBeforeAWeekBinding()
+                }
+            })
+        }
         function HouseCountBinding() {
             Vue.createApp(
                 {
-                    
                     data: function () {
                         return {
                             HouseCount: json.count[0]
@@ -213,7 +228,6 @@
         function MemberCountBinding() {
             Vue.createApp(
                 {
-
                     data: function () {
                         return {
                             MemberCount: json.count[1]
@@ -223,13 +237,25 @@
             ).mount('#memberCountblock')
         }
 
+
+        function IncomeBeforeAWeekBinding() {
+            Vue.createApp({
+                data: function () {
+                    return {
+                        IncomeBeforeAWeek: json.income
+                    }
+                }
+            }).mount('#incomeBeforeAWeek')
+        }
+
         $(document).ready(function () {
             LoadHouseData();
             LoadMemberData();
+            LoadIncomeData();
         });
 
-        
-       
+
+
 
     </script>
 }

@@ -1,21 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Lazcat.Infrastructure" Version="1.0.9" />
-        <PackageReference Include="SpanJson" Version="3.1.0" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Lazcat.Infrastructure" Version="1.0.9" />
+		<PackageReference Include="SpanJson" Version="3.1.0" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Locations" />
-        <Folder Include="Shared" />
-    </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Locations" />
+		<Folder Include="Shared" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

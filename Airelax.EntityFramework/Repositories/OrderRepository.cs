@@ -17,10 +17,21 @@ namespace Airelax.EntityFramework.Repositories
     public class OrderRepository : IOrderRepository
     {
         private readonly AirelaxContext _context;
-
         public OrderRepository(AirelaxContext context)
         {
             _context = context;
+        }
+        public IQueryable<Order> GetTotalInCertainRange(DateTime startDate, DateTime endDate)
+        {
+            var totalInCertainRange = _context.Orders
+                .Include(x => x.OrderDetail)
+                .Include(x => x.OrderPriceDetail)
+                .Include(x => x.Payment)
+                .Where(x => x.IsDeleted == false
+
+                            && startDate < x.OrderDate
+                            && x.OrderDate <= endDate);
+            return totalInCertainRange;
         }
 
         public async Task<IEnumerable<Order>> GetTrips(string memberId)
@@ -35,16 +46,6 @@ namespace Airelax.EntityFramework.Repositories
 
             return trips;
         }
-
-        //public Order GetOrder(string houseId)
-        //{
-        //    //串Orders/OrderDetail/OrderPriceDetail/Payment
-        //    return _context.Orders
-        //            .Include(x => x.OrderDetail)
-        //            .Include(x => x.OrderPriceDetail)
-        //            .Include(x => x.Payment)
-        //            .FirstOrDefault(x => x.HouseId == houseId);
-        //}
 
         public async Task<Order> GetOrderAsync(Expression<Func<Order, bool>> expression)
         {
@@ -74,6 +75,5 @@ namespace Airelax.EntityFramework.Repositories
                 .Include(x => x.House)
                 .Include(x => x.Member);
         }
-        
     }
 }

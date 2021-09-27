@@ -31,12 +31,12 @@ namespace Airelax.Admin
         public void ConfigureServices(IServiceCollection services)
         {
             string connectString;
-            if (HostEnvironment.IsDevelopment())
-            {
-                connectString = Define.Database.LOCAL_CONNECT_STRING;
-                services.AddCors(opt => { opt.AddPolicy("dev", builder => builder.WithOrigins("http://localhost:8080").AllowCredentials().AllowAnyHeader()); });
-            }
-            else
+            //if (HostEnvironment.IsDevelopment())
+            //{
+            //    connectString = Define.Database.LOCAL_CONNECT_STRING;
+            //    services.AddCors(opt => { opt.AddPolicy("dev", builder => builder.WithOrigins("http://localhost:8080").AllowCredentials().AllowAnyHeader()); });
+            //}
+            //else
             {
                 connectString = Define.Database.DB_CONNECT_STRING;
                 //todo remove product
@@ -74,7 +74,7 @@ namespace Airelax.Admin
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseExceptionHandler(builder => builder.Run(async context => await ExceptionHandler.HandleError(context)));
             app.UseStaticFiles();
 

@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Airelax.Admin.Controllers
 {
@@ -6,17 +9,18 @@ namespace Airelax.Admin.Controllers
     [Route("api/[controller]")]
     public class IncomeController : Controller
     {
-        public IActionResult RevenueBeforeNow()
+        private readonly IIncomeService _incomeService;
+        public IncomeController(IIncomeService incomeService)
         {
-            return View();
+            _incomeService = incomeService;
         }
-        public IActionResult RevenueDuringWeek()
+        [HttpGet]
+        [Route("{startDate}/{endDate}")]
+        public Dictionary<string, decimal> GetIncome(DateTime startDate, DateTime endDate)
         {
-            return View();
-        }
-        public IActionResult SalesDuringMonth()
-        {
-            return View();
+            var incomeInput = new IncomeInput { StartDate = startDate, EndDate = endDate };
+            var incomePerDateDict = _incomeService.ConvertToDictionary(incomeInput);
+            return incomePerDateDict;
         }
     }
 }
