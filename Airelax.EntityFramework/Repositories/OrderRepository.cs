@@ -37,7 +37,7 @@ namespace Airelax.EntityFramework.Repositories
         }
         public IQueryable<Order> GetAll()
         {
-            return GetOrderIncludeAll();
+            return GetOrderIncludeAll().Where(x => !x.IsDeleted);
         }
 
         //public Order GetOrder(string houseId)

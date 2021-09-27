@@ -16,7 +16,7 @@ namespace Airelax.Admin.Controllers
             _orderService = orderService;
         }
         [HttpPost]
-        public async Task<bool> UpdateOrderId(OrderIdInput input)
+        public async Task<bool> DeleteOrder(OrderIdInput input)
         {
             await _orderService.DeleteOrder(input);
             return true;
