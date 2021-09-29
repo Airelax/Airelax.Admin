@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Airelax.EntityFramework;
 using Airelax.EntityFramework.DbContexts;
 using Lazcat.Infrastructure.ExceptionHandlers;
@@ -34,6 +35,7 @@ namespace Airelax.Admin
             if (HostEnvironment.IsDevelopment())
             {
                 connectString = Define.Database.LOCAL_CONNECT_STRING;
+                connectString = Define.Database.DB_CONNECT_STRING;
                 services.AddCors(opt => { opt.AddPolicy("dev", builder => builder.WithOrigins("http://localhost:8080").AllowCredentials().AllowAnyHeader()); });
             }
             else
@@ -57,6 +59,7 @@ namespace Airelax.Admin
 
             services.AddByDependencyInjectionAttribute();
             services.AddControllersWithViews();
+            services.AddSwaggerDocument();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,6 +80,9 @@ namespace Airelax.Admin
             
             app.UseExceptionHandler(builder => builder.Run(async context => await ExceptionHandler.HandleError(context)));
             app.UseStaticFiles();
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseRouting();
 

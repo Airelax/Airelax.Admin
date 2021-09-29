@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Airelax.Admin.Models;
+using Airelax.Domain;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
 
 namespace Airelax.Admin.Controllers
 {
@@ -7,11 +13,33 @@ namespace Airelax.Admin.Controllers
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
+
         // [HttpGet]
         // [Route("count")]
         // public Dictionary<int, int> Count()
         // {
         //     
         // }
+
+        private readonly IOrderService _orderService;
+
+        public OrdersController(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<OrderViewModel> GetOrder(string id)
+        {
+            return await _orderService.GetOrderAsync(id);
+        }
+
+        [HttpPost]
+        public async Task<bool> DeleteOrder(OrderIdInput input)
+        {
+            await _orderService.DeleteOrder(input);
+            return true;
+        }
     }
 }
