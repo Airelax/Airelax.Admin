@@ -82,6 +82,7 @@ namespace Airelax.EntityFramework.Repositories
                 .Include(x => x.OrderPriceDetail)
                 .Include(x => x.Payment)
                 .Include(x => x.House)
+                .ThenInclude(x=>x.HouseLocation)
                 .Include(x => x.Member);
         }
     }

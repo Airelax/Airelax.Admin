@@ -1,4 +1,4 @@
-namespace Airelax.Admin
+namespace Airelax.Admin.Defines
 {
     public struct Define
     {
