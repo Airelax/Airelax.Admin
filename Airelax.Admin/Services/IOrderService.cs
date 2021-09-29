@@ -8,6 +8,6 @@ namespace Airelax.Domain
     {
         Task DeleteOrder(OrderIdInput input);
         Task<OrderViewModel> GetOrderAsync(string id);
-        Task<Dictionary<string, int>> GetCount();
+        Task<IEnumerable<OrderCount>> GetCount();
     }
 }

@@ -35,7 +35,7 @@ namespace Airelax.Admin.Controllers
 
         [HttpGet]
         [Route("count")]
-        public async Task<Dictionary<string, int>> Count()
+        public async Task<IEnumerable<OrderCount>> Count()
         {
             return await _orderService.GetCount();
         }

@@ -56,7 +56,7 @@ namespace Airelax.Domain
             _orderRepository.SaveChanges();
         }
 
-        public async Task<Dictionary<string, int>> GetCount()
+        public async Task<IEnumerable<OrderCount>> GetCount()
         {
             var now = DateTime.Now;
             var halfYear = now.AddMonths(-6);
@@ -65,8 +65,11 @@ namespace Airelax.Domain
                             && x.OrderDate < new DateTime(now.Year, now.Month, 1))
                 .Select(x => new {Date = x.OrderDate})
                 .ToListAsync();
-            return orderDates.GroupBy(x => x.Date.ToString("yyyy-MM"))
-                .ToDictionary(x => x.Key, x => x.Count());
+            return orderDates.GroupBy(x => x.Date.ToString("yyyy-MM")).OrderBy(x => x.Key).Select(x => new OrderCount()
+            {
+                Date = x.Key,
+                Total = x.Count()
+            });
         }
 
         /// <summary>
