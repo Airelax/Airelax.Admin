@@ -223,23 +223,29 @@
             ).mount('#memberCountblock')
         }
 
+       // 1. fetch 後端api 
+       // 2. 畫圖
+       // 3. 呼叫
+        
         $(document).ready(function () {
             LoadHouseData();
             LoadMemberData();
         });
+        
+        
         $(window).resize(function () {
 
             // reset the seq for charts drawing animations
             seq = seq2 = 0;
-
             setTimeout(function () {
                 initDashboardPageCharts();
             }, 500);
         });
+        
         function initDashboardPageCharts() {
             if ($('#OrderChart').length != 0) {
                 OrderChart = {
-                    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                    labels:  ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
                     series: [
                         [20, 7, 1, 17, 3, 38, 50]
                     ]
@@ -265,12 +271,5 @@
             }
 
         }
-
-
-
-
-
-
-
     </script>
 }

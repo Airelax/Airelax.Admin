@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Airelax.Admin.Controllers
 {
@@ -6,5 +7,11 @@ namespace Airelax.Admin.Controllers
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
+        // [HttpGet]
+        // [Route("count")]
+        // public Dictionary<int, int> Count()
+        // {
+        //     
+        // }
     }
 }
