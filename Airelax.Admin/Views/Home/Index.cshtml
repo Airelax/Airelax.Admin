@@ -85,7 +85,7 @@
         <div class="col-md-4">
             <div class="card card-chart">
                 <div class="card-header card-header-warning">
-                    <div class="ct-chart" id="websiteViewsChart"></div>
+                    <div class="ct-chart" id="OrderChart"></div>
                 </div>
                 <div class="card-body">
                     <h4 class="card-title">半年訂單</h4>
@@ -154,16 +154,16 @@
     @* </div> *@
 </div>
 
-@section Scripts{ 
+@section Scripts{
     <script>
 
         let json = {
             count: [
                 { houseCount: "NaN" },
-                {memberCount:"NaN"},
+                { memberCount: "NaN" },
 
             ]
-            
+
 
         }
         function LoadHouseData() {
@@ -174,7 +174,7 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response)
-                    
+
                     json.count[0] = response
                     HouseCountBinding()
                 }
@@ -200,7 +200,7 @@
         function HouseCountBinding() {
             Vue.createApp(
                 {
-                    
+
                     data: function () {
                         return {
                             HouseCount: json.count[0]
@@ -227,9 +227,50 @@
             LoadHouseData();
             LoadMemberData();
         });
+        $(window).resize(function () {
 
-        
-       
+            // reset the seq for charts drawing animations
+            seq = seq2 = 0;
+
+            setTimeout(function () {
+                initDashboardPageCharts();
+            }, 500);
+        });
+        function initDashboardPageCharts() {
+            if ($('#OrderChart').length != 0) {
+                OrderChart = {
+                    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                    series: [
+                        [20, 7, 1, 17, 3, 38, 50]
+                    ]
+                };
+
+                optionsOrderChart = {
+                    lineSmooth: Chartist.Interpolation.cardinal({
+                        tension: 0
+                    }),
+                    low: 0,
+                    high: 100, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                    chartPadding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    },
+                }
+
+                var OrderChart = new Chartist.Line('#OrderChart', OrderChart, optionsOrderChart);
+
+                md.startAnimationForLineChart(OrderChart);
+            }
+
+        }
+
+
+
+
+
+
 
     </script>
 }

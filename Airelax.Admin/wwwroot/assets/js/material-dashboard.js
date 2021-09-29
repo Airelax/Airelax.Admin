@@ -309,7 +309,7 @@ md = {
 
     initDashboardPageCharts: function () {
 
-        if ($('#dailySalesChart').length != 0 || $('#completedTasksChart').length != 0 || $('#websiteViewsChart').length != 0 || $('#OrderChart').length != 0) {
+        if ($('#dailySalesChart').length != 0 || $('#completedTasksChart').length != 0 || $('#websiteViewsChart').length != 0 ) {
             /* ----------==========     Daily Sales Chart initialization    ==========---------- */
 
             dataDailySalesChart = {
@@ -336,32 +336,8 @@ md = {
             var dailySalesChart = new Chartist.Line('#dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
 
             md.startAnimationForLineChart(dailySalesChart);
-            /*---------------------*/
 
-            OrderChart = {
-                labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-                series: [
-                    [20, 7, 1, 17, 3, 38, 50]
-                ]
-            };
-
-            optionsOrderChart = {
-                lineSmooth: Chartist.Interpolation.cardinal({
-                    tension: 0
-                }),
-                low: 0,
-                high: 100, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
-                chartPadding: {
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    left: 0
-                },
-            }
-
-            var OrderChart = new Chartist.Line('#OrderChart', OrderChart, optionsOrderChart);
-
-            md.startAnimationForLineChart(OrderChart);
+       
 
 
             /* ----------==========     Completed Tasks Chart initialization    ==========---------- */
