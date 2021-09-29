@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Airelax.Admin.Models;
@@ -13,14 +12,6 @@ namespace Airelax.Admin.Controllers
     [Route("api/[controller]")]
     public class OrdersController : Controller
     {
-
-        // [HttpGet]
-        // [Route("count")]
-        // public Dictionary<int, int> Count()
-        // {
-        //     
-        // }
-
         private readonly IOrderService _orderService;
 
         public OrdersController(IOrderService orderService)
@@ -40,6 +31,13 @@ namespace Airelax.Admin.Controllers
         {
             await _orderService.DeleteOrder(input);
             return true;
+        }
+
+        [HttpGet]
+        [Route("count")]
+        public async Task<Dictionary<string, int>> Count()
+        {
+            return await _orderService.GetCount();
         }
     }
 }
