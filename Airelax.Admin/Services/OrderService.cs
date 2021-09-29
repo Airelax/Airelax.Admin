@@ -24,6 +24,20 @@ namespace Airelax.Domain
             _houseRepository = houseRepository;
         }
 
+        public async Task<OrderViewModel> GetOrderAsync(string id)
+        {
+            var order = await _orderRepository.GetOrderAsync(x => x.Id == id);
+            CheckOrderId(order);
+            var orderViewModel = new OrderViewModel()
+            {
+                OrderId = order.Id,
+                CustomerId = order.CustomerId,
+                HouseId = order.HouseId,
+                OrderDate = order.OrderDate.ToString("yyyy-MM-dd")
+            };
+            return orderViewModel;
+        }
+
         public async Task DeleteOrder(OrderIdInput input)
         {
             var order = await _orderRepository.GetOrderAsync(x => x.Id == input.OrderId);

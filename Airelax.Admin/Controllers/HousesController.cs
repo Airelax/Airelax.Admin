@@ -2,11 +2,9 @@ using Airelax.Admin.Services;
 using Airelax.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Airelax.Domain.Houses;
-using Airelax.Domain.Members;
 using Airelax.Domain.RepositoryInterface;
-using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Airelax.Admin.Models;
 
 namespace Airelax.Admin.Controllers
 {
@@ -38,10 +36,24 @@ namespace Airelax.Admin.Controllers
             return _houseRepository.GetAll().Count();
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<HouseViewModel> GetHouse(string id)
+        {
+            return await _houseService.GetHouseAsync(id);
+        }
+
         [HttpPost]
-        public async Task<bool> OffShelf(HousesIdInput input)
+        public async Task<bool> OffShelf(HouseIdInput input)
         {
             await _houseService.OffShelf(input);
+            return true;
+        }
+
+        [HttpDelete]
+        public async Task<bool> DeleteHouse(HouseIdInput input)
+        {
+            await _houseService.DeleteHouse(input);
             return true;
         }
     }

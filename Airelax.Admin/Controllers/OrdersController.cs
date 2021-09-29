@@ -15,6 +15,14 @@ namespace Airelax.Admin.Controllers
         {
             _orderService = orderService;
         }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<OrderViewModel> GetOrder(string id)
+        {
+            return await _orderService.GetOrderAsync(id);
+        }
+
         [HttpPost]
         public async Task<bool> DeleteOrder(OrderIdInput input)
         {

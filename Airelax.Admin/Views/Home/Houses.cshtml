@@ -1,8 +1,148 @@
-﻿
-@{
+﻿@{
     Layout = "_Layout";
 }
 
-@section Scripts{
+@section topCSS{
+    <link href="~/assets/css/House.css" rel="stylesheet" />
+}
 
+<nav class="navbar navbar-expand-lg bg-warning" id="App">
+    <form class="form-inline ml-auto">
+        <div class="form-group has-white">
+            <input type="text" class="form-control" placeholder="輸入房源ID" maxlength="11" v-model="houseId" />
+        </div>
+        <button type="submit" class="btn btn-neutral btn-icon btn-round" v-on:click.prevent="Search">
+            <i class="material-icons">搜尋</i>
+        </button>
+    </form>
+</nav>
+
+<div class="table-responsive">
+    <table class="table table-shopping">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="name">名稱</th>
+                <th>房源Id</th>
+                <th>擁有者Id</th>
+                <th>建立日期</th>
+                <th>城市</th>
+                <th>地址</th>
+            </tr>
+        </thead>
+        <tbody class="houseTbody" id="app">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        const houseTbody = document.querySelector(".houseTbody")
+        function GetHouse() {
+            Vue.createApp(
+                {
+                    data() {
+                        return {
+                            houseId: '',
+                            houseData: Array,
+                        }
+                    },
+                    methods: {
+                        Search: function () {
+                            axios({
+                                method: 'get',
+                                url: `/api/Houses/${this.houseId}`,
+                            }).then((res) => {
+                                this.houseData = res.data
+                                houseTbody.innerHTML = "";
+                                createHouseTbody(
+                                    `
+                                    <td>
+                                        <div class="img-container">
+                                            <img src="${this.houseData.photo}" alt="房源圖片" />
+                                        </div>
+                                    </td>
+                                    <td class="td-name">
+                                        <a href="#">${this.houseData.title}</a>
+                                    </td>
+                                    <td>${this.houseData.houseId}</td>
+                                    <td>${this.houseData.ownerId}</td>
+                                    <td>${this.houseData.createTime}</td>
+                                    <td>${this.houseData.city}</td>
+                                    <td>${this.houseData.town}</td>
+                                    <td class="td-actions">
+                                        <div>
+                                            <button v-if='${this.houseData.status == 1}' type="button" class="btn btn-simple" id="btn" v-on:click.prevent="OffShelf()">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </button>
+                                            <button v-else type="button" class="btn btn-success" id="btn" v-on:click.prevent="OffShelf()">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteHouse()">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    `
+                                )
+                                Vue.createApp(
+                                    {
+                                        data() {
+                                            return {
+                                                houseData: res.data,
+                                            }
+                                        },
+                                        methods: {
+                                            OffShelf: function () {
+                                                const vm = this
+                                                axios({
+                                                    method: 'post',
+                                                    url: '/api/Houses',
+                                                    data: { HouseId: this.houseData.houseId }
+                                                }).then(function () {
+                                                    const btn = document.querySelector("#btn")
+                                                    if (vm.houseData.status == 1) {
+                                                        btn.classList = "btn btn-success"
+                                                        vm.houseData.status = 3
+                                                    }
+                                                    else if (vm.houseData.status == 3) {
+                                                        btn.classList = "btn btn-simple"
+                                                        vm.houseData.status = 1
+                                                    }
+                                                }).catch((err) => console.log(err));
+                                            },
+                                            DeleteHouse: function () {
+                                                const vm = this
+                                                axios({
+                                                    method: 'delete',
+                                                    url: '/api/Houses',
+                                                    data: { HouseId: this.houseData.houseId }
+                                                }).then(function () {
+                                                    houseTbody.innerHTML = ""
+                                                    alert(`房源 ${vm.houseData.title} 已刪除`)
+                                                }).catch((err) => console.log(err));
+                                            }
+                                        }
+                                    }
+                                ).mount('#app')
+                            }).catch((err) => {
+                                console.log(err)
+                                alert(`搜尋不到此房源`)
+                            });
+                        }
+                    }
+                }
+            ).mount('#App')
+        }
+
+        $(document).ready(function () {
+            GetHouse();
+        })
+
+        function createHouseTbody(template) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `${template}`
+            houseTbody.append(tr);
+        }
+    </script>
 }
