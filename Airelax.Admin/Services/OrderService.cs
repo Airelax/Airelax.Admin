@@ -31,9 +31,11 @@ namespace Airelax.Domain
             var orderViewModel = new OrderViewModel()
             {
                 OrderId = order.Id,
-                CustomerId = order.CustomerId,
-                HouseId = order.HouseId,
-                OrderDate = order.OrderDate.ToString("yyyy-MM-dd")
+                CustomerName = order.Member.Name,
+                HouseName = order.House.Title,
+                OrderDate = order.OrderDate.ToString("yyyy-MM-dd"),
+                StartDate = order.OrderDetail.StartDate.ToString("yyyy-MM-dd"),
+                EndDate = order.OrderDetail.EndDate.ToString("yyyy-MM-dd")
             };
             return orderViewModel;
         }

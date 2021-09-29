@@ -3,14 +3,14 @@
 }
 
 @section topCSS{
-    <link href="~/assets/css/Order.css" rel="stylesheet"/>
+    <link href="~/assets/css/Order.css" rel="stylesheet" />
 }
 
-<div id="App"> 
+<div id="App">
     <nav class="navbar navbar-expand-lg bg-warning">
         <form class="form-inline ml-auto">
             <div class="form-group has-white">
-                <input type="text" class="form-control" placeholder="輸入訂單ID" maxlength="11" v-model="orderId"/>
+                <input type="text" class="form-control" placeholder="輸入訂單ID" maxlength="11" v-model="orderId" />
             </div>
             <button type="submit" class="btn btn-neutral btn-icon btn-round" v-on:click.prevent="Search">
                 <i class="material-icons">搜尋</i>
@@ -18,31 +18,34 @@
         </form>
     </nav>
 
-    <div class="table-responsive" >
+    <div class="table-responsive">
         <table class="table table-shopping">
             <thead>
-            <tr>
-                <th class="name">訂單編號</th>
-                <th>顧客Id</th>
-                <th>房源Id</th>
-                <th>建立日期</th>
-            </tr>
+                <tr>
+                    <th class="name">訂單編號</th>
+                    <th>顧客</th>
+                    <th>房源</th>
+                    <th>建立日期</th>
+                    <th>起始日期</th>
+                    <th>結束日期</th>
+                </tr>
             </thead>
             <tbody class="orderTbody" v-if="orderData">
-            {{orderData}}
-            <tr>
-                <td class="myTd-name">{{orderData.orderId}}</td>
-                <td>{{orderData.customerId}}</td>
-                <td>{{orderData.houseId}}</td>
-                <td>{{orderData.orderDate}}</td>
-                <td class="td-actions">
-                    <div>
-                        <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteOrder()">
-                            <i class="far fa-trash-alt"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td class="myTd-name">{{orderData.orderId}}</td>
+                    <td>{{orderData.customerName}}</td>
+                    <td class="td-name"><a href="#">{{orderData.houseName}}</a></td>
+                    <td>{{orderData.orderDate}}</td>
+                    <td>{{orderData.startDate}}</td>
+                    <td>{{orderData.endDate}}</td>
+                    <td class="td-actions">
+                        <div>
+                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteOrder()">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -50,7 +53,6 @@
 
 @section Scripts{
     <script>
-        const orderTbody = document.querySelector(".orderTbody")
         const orderData = null;
         function GetOrder() {
             Vue.createApp(
@@ -68,7 +70,6 @@
                                 url: `/api/Orders/${this.orderId}`,
                             }).then((res) => {
                                 this.orderData = res.data
-                                 
                             }).catch((err) => {
                                 console.log(err)
                                 alert(`搜尋不到此訂單`)
@@ -92,6 +93,5 @@
         $(document).ready(function () {
             GetOrder();
         })
-
     </script>
 }

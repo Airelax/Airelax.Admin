@@ -25,9 +25,10 @@
     font-size: 14px !important;
 }
 
-.myTd-name ~ td,
-.name ~ th {
+th,
+td {
     min-width: fit-content !important;
+    white-space: nowrap;
     text-align: center;
 }
 
@@ -36,9 +37,20 @@ td {
     font-weight: 800;
 }
 
-tr td:nth-child(4) {
-    white-space: nowrap;
+.name,
+.myTd-name {
+    text-align: start;
 }
+
+.td-name {
+    min-width: 200px !important;
+    white-space: normal;
+    text-align: center;
+}
+
+    .td-name a {
+        font-weight: 800;
+    }
 
 .td-actions div {
     display: flex;
