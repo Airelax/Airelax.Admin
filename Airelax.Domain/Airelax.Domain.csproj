@@ -4,19 +4,20 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+
     <ItemGroup>
-        <PackageReference Include="Lazcat.Infrastructure" Version="1.0.9" />
-        <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
-        <PackageReference Include="SpanJson" Version="3.1.0" />
+        <PackageReference Include="Lazcat.Infrastructure" Version="1.0.9"/>
+        <PackageReference Include="NSwag.AspNetCore" Version="13.13.2"/>
+        <PackageReference Include="SpanJson" Version="3.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Locations" />
-        <Folder Include="Shared" />
+        <Folder Include="Locations"/>
+        <Folder Include="Shared"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
+        <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

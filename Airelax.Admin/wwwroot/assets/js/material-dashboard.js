@@ -309,7 +309,7 @@ md = {
 
     initDashboardPageCharts: function () {
 
-        if ($('#dailySalesChart').length != 0 || $('#completedTasksChart').length != 0 || $('#websiteViewsChart').length != 0 ) {
+        if ($('#dailySalesChart').length != 0 || $('#completedTasksChart').length != 0 || $('#websiteViewsChart').length != 0) {
             /* ----------==========     Daily Sales Chart initialization    ==========---------- */
 
             dataDailySalesChart = {
@@ -336,8 +336,6 @@ md = {
             var dailySalesChart = new Chartist.Line('#dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
 
             md.startAnimationForLineChart(dailySalesChart);
-
-       
 
 
             /* ----------==========     Completed Tasks Chart initialization    ==========---------- */
