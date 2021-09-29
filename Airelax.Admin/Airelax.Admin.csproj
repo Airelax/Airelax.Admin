@@ -5,13 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Airelax.Domain\Airelax.Domain.csproj" />
-      <ProjectReference Include="..\Airelax.EntityFramework\Airelax.EntityFramework.csproj" />
-      <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
+      <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services" />
+      <ProjectReference Include="..\Airelax.Domain\Airelax.Domain.csproj" />
+      <ProjectReference Include="..\Airelax.EntityFramework\Airelax.EntityFramework.csproj" />
+      <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

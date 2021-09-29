@@ -1,0 +1,56 @@
+﻿body {
+}
+
+.form-inline.ml-auto {
+    margin: 0 auto;
+}
+
+.form-control {
+    width: 100% !important;
+}
+
+@media screen and (min-width: 768px) {
+    .form-group.has-white {
+        width: 318px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .form-group.has-white {
+        width: 636px;
+    }
+}
+
+.table th {
+    font-size: 14px !important;
+}
+
+.myTd-name ~ td,
+.name ~ th {
+    min-width: fit-content !important;
+    text-align: center;
+}
+
+td {
+    font-size: 16px !important;
+    font-weight: 800;
+}
+
+tr td:nth-child(4) {
+    white-space: nowrap;
+}
+
+.td-actions div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .td-actions div button {
+        width: 50px;
+        margin: 5px 0 !important;
+    }
+
+.btn.btn-danger i {
+    font-size: 16px;
+}

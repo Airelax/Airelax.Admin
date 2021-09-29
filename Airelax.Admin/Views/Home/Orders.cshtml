@@ -1,5 +1,112 @@
-﻿@model dynamic
-
-@{
+﻿@{
     Layout = "_Layout";
+}
+
+@section topCSS{
+    <link href="~/assets/css/Order.css" rel="stylesheet" />
+}
+
+<nav class="navbar navbar-expand-lg bg-warning" id="App">
+    <form class="form-inline ml-auto">
+        <div class="form-group has-white">
+            <input type="text" class="form-control" placeholder="輸入訂單ID" maxlength="11" v-model="orderId" />
+        </div>
+        <button type="submit" class="btn btn-neutral btn-icon btn-round" v-on:click.prevent="Search">
+            <i class="material-icons">搜尋</i>
+        </button>
+    </form>
+</nav>
+
+<div class="table-responsive">
+    <table class="table table-shopping">
+        <thead>
+            <tr>
+                <th class="name">訂單編號</th>
+                <th>顧客Id</th>
+                <th>房源Id</th>
+                <th>建立日期</th>
+            </tr>
+        </thead>
+        <tbody class="orderTbody" id="app">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        const orderTbody = document.querySelector(".orderTbody")
+        function GetOrder() {
+            Vue.createApp(
+                {
+                    data() {
+                        return {
+                            orderId: '',
+                            orderData: Array,
+                        }
+                    },
+                    methods: {
+                        Search: function () {
+                            axios({
+                                method: 'get',
+                                url: `/api/Orders/${this.orderId}`,
+                            }).then((res) => {
+                                this.orderData = res.data
+                                orderTbody.innerHTML = "";
+                                createOrderTbody(
+                                    `
+                                    <td class="myTd-name">${this.orderData.orderId}</td>
+                                    <td>${this.orderData.customerId}</td>
+                                    <td>${this.orderData.houseId}</td>
+                                    <td>${this.orderData.orderDate}</td>
+                                    <td class="td-actions">
+                                        <div>
+                                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteOrder()">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    `
+                                )
+                                Vue.createApp(
+                                    {
+                                        data() {
+                                            return {
+                                                orderData: res.data,
+                                            }
+                                        },
+                                        methods: {
+                                            DeleteOrder: function () {
+                                                const vm = this
+                                                axios({
+                                                    method: 'post',
+                                                    url: '/api/Orders',
+                                                    data: { OrderId: this.orderData.orderId }
+                                                }).then(function () {
+                                                    orderTbody.innerHTML = ""
+                                                    alert(`訂單 ${vm.orderData.orderId} 已刪除`)
+                                                }).catch((err) => console.log(err));
+                                            }
+                                        }
+                                    }
+                                ).mount('#app')
+                            }).catch((err) => {
+                                console.log(err)
+                                alert(`搜尋不到此訂單`)
+                            });
+                        }
+                    }
+                }
+            ).mount("#App")
+        }
+
+        $(document).ready(function () {
+            GetOrder();
+        })
+
+        function createOrderTbody(template) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `${template}`
+            orderTbody.append(tr);
+        }
+    </script>
 }

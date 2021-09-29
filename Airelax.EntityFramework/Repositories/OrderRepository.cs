@@ -35,6 +35,10 @@ namespace Airelax.EntityFramework.Repositories
 
             return trips;
         }
+        public IQueryable<Order> GetAll()
+        {
+            return GetOrderIncludeAll().Where(x => !x.IsDeleted);
+        }
 
         //public Order GetOrder(string houseId)
         //{
@@ -64,6 +68,12 @@ namespace Airelax.EntityFramework.Repositories
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public void DeleteOrder(Order order)
+        {
+            order.IsDeleted = true;
+            Update(order);
         }
 
         private IIncludableQueryable<Order, Member> GetOrderIncludeAll()

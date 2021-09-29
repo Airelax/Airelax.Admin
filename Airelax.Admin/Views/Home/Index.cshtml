@@ -154,16 +154,16 @@
     @* </div> *@
 </div>
 
-@section Scripts{ 
+@section Scripts{
     <script>
 
         let json = {
             count: [
                 { houseCount: "NaN" },
-                {memberCount:"NaN"},
+                { memberCount: "NaN" },
 
             ]
-            
+
 
         }
         function LoadHouseData() {
@@ -174,7 +174,7 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response)
-                    
+
                     json.count[0] = response
                     HouseCountBinding()
                 }
@@ -200,7 +200,7 @@
         function HouseCountBinding() {
             Vue.createApp(
                 {
-                    
+
                     data: function () {
                         return {
                             HouseCount: json.count[0]
@@ -228,8 +228,8 @@
             LoadMemberData();
         });
 
-        
-       
+
+
 
     </script>
 }
