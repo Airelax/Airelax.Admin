@@ -3,3 +3,137 @@
     Layout = "_Layout";
 }
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card card-chart">
+                <div class="card-header card-header-success">
+                    <div class="ct-chart" id="incomeChart"></div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Income</h4>
+                    <p class="card-category">
+                        <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">access_time</i> updated 4 minutes ago
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-3 col-md-4">
+            <div class="row">
+                <label for="startDate">起始時間</label>
+                <input class="m-2" type="date" id="startDateInput">
+            </div>
+            <div class="row">
+                <label for="endDate">結束時間</label>
+                <input class="m-2" type="date" id="endDateInput">
+            </div>
+            <div class="m-2 row">
+                <div class="col-3 col-md-12">
+                    <button class="btn btn-primary btn-round " id="monthBtn">按月</button>
+                </div>
+                <div class="col-3 col-md-12">
+                    <button class="btn btn-primary btn-round " id="weekBtn">按週</button>
+                </div>
+                <div class="col-3 col-md-12">
+                    <button class="btn btn-primary btn-round " id="dayBtn">按日</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        let responseJson = {
+        }
+        const startDateInput = $("#startDateInput");
+        const endDateInput = $("#endDateInput");
+        const monthBtn = $("#monthBtn");
+        const weekBtn = $("#weekBtn");
+        const dayBtn = $("#dayBtn");
+        const dayMiliSec = 86400000;
+        let sd;
+        let ed;
+        startDateInput.on("change", () => {
+            sd = startDateInput.val();
+        });
+        endDateInput.on("change", () => {
+            ed = endDateInput.val();
+        });
+        //按月
+        monthBtn.on("click", () => {
+            LoadIncomeData(sd, ed);
+            //放資料進chart
+        });
+        //按週
+        weekBtn.on("click", () => {
+            LoadIncomeData(sd, ed);
+            //放資料進chart
+        });
+        //按日
+        dayBtn.on("click", () => {
+            if ((new Date(ed) - new Date(sd)) / dayMiliSec > 7) {
+                alert("重選起始日期，不可間隔七天")
+                return;
+            }
+            LoadIncomeData(sd, ed);
+            //放資料進chart
+        });
+
+
+
+
+        function LoadIncomeData(startDate, endDate) {
+            if (startDate !== null && endDate !== null) {
+                $.ajax({
+                    type: "Get",
+                    url: `/api/Income/${startDate}/${endDate}`,
+                    data: "",
+                    dataType: "json",
+                    success: function (response) {
+                        responseJson = response
+                        let data = {
+                            labels: Object.keys(responseJson).map(x => x.slice(-5)),
+                            series: [
+                                Object.values(responseJson)
+                            ]
+                        };
+                        initIncomeChart(data);
+                    }
+                })
+            }
+            else {
+                alert("請選擇起始日期與結束日期");
+            }
+        }
+
+
+        function initIncomeChart(data) {
+            if ($('#incomeChart').length != 0) {
+                dataIncomeChart = data;
+
+                optionsIncomeChart = {
+                    lineSmooth: Chartist.Interpolation.cardinal({
+                        tension: 0
+                    }),
+                    low: 0,
+                    high: Math.max(...data.series[0]), // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                    chartPadding: {
+                        top: 0,
+                        right: 50,
+                        bottom: 0,
+                        left: 50
+                    },
+                }
+                var incomeChart = new Chartist.Line('#incomeChart', dataIncomeChart, optionsIncomeChart);
+
+                md.startAnimationForLineChart(incomeChart);
+            }
+        }
+    </script>
+} 

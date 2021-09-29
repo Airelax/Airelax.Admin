@@ -10,8 +10,4 @@
       <ProjectReference Include="..\Airelax.Infrastructure\Airelax.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Services" />
-    </ItemGroup>
-
 </Project>

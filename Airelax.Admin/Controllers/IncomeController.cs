@@ -19,7 +19,7 @@ namespace Airelax.Admin.Controllers
         public Dictionary<string, decimal> GetIncome(DateTime startDate, DateTime endDate)
         {
             var incomeInput = new IncomeInput { StartDate = startDate, EndDate = endDate };
-            var incomePerDateDict = _incomeService.ConvertToDictionary(incomeInput);
+            var incomePerDateDict = _incomeService.GetIncome(incomeInput);
             return incomePerDateDict;
         }
     }

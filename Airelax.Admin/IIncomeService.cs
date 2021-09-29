@@ -5,6 +5,6 @@ namespace Airelax.Admin
 {
     public interface IIncomeService
     {
-        Dictionary<string, decimal> ConvertToDictionary(IncomeInput incomeInput);
+        Dictionary<string, decimal> GetIncome(IncomeInput incomeInput);
     }
 }
