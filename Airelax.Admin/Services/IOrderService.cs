@@ -1,4 +1,5 @@
-﻿using Airelax.Admin.Models;
+﻿using System.Collections.Generic;
+using Airelax.Admin.Models;
 using System.Threading.Tasks;
 
 namespace Airelax.Domain
@@ -7,5 +8,6 @@ namespace Airelax.Domain
     {
         Task DeleteOrder(OrderIdInput input);
         Task<OrderViewModel> GetOrderAsync(string id);
+        Task<IEnumerable<OrderCount>> GetCount();
     }
 }

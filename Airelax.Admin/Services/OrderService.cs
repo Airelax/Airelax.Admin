@@ -1,4 +1,6 @@
-﻿using Airelax.Admin.Models;
+﻿using System;
+using System.Collections.Generic;
+using Airelax.Admin.Models;
 using Airelax.Domain.Orders;
 using Airelax.Domain.RepositoryInterface;
 using Airelax.Infrastructure.Helpers;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Airelax.Domain
 {
@@ -54,6 +57,23 @@ namespace Airelax.Domain
             _orderRepository.DeleteOrder(order);
             _orderRepository.SaveChanges();
         }
+
+        public async Task<IEnumerable<OrderCount>> GetCount()
+        {
+            var now = DateTime.Now;
+            var halfYear = now.AddMonths(-6);
+            var orderDates = await _orderRepository.GetAll()
+                .Where(x => x.OrderDate > new DateTime(halfYear.Year, halfYear.Month, 1)
+                            && x.OrderDate < new DateTime(now.Year, now.Month, 1))
+                .Select(x => new {Date = x.OrderDate})
+                .ToListAsync();
+            return orderDates.GroupBy(x => x.Date.ToString("yyyy-MM")).OrderBy(x => x.Key).Select(x => new OrderCount()
+            {
+                Date = x.Key,
+                Total = x.Count()
+            });
+        }
+
         /// <summary>
         /// 判斷訂單編號存在
         /// </summary>

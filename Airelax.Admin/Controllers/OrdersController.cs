@@ -1,7 +1,10 @@
-﻿using Airelax.Admin.Models;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using Airelax.Admin.Models;
 using Airelax.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+
 
 namespace Airelax.Admin.Controllers
 {
@@ -28,6 +31,13 @@ namespace Airelax.Admin.Controllers
         {
             await _orderService.DeleteOrder(input);
             return true;
+        }
+
+        [HttpGet]
+        [Route("count")]
+        public async Task<IEnumerable<OrderCount>> Count()
+        {
+            return await _orderService.GetCount();
         }
     }
 }

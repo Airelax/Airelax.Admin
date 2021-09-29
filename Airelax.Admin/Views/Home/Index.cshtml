@@ -85,7 +85,7 @@
         <div class="col-md-4">
             <div class="card card-chart">
                 <div class="card-header card-header-warning">
-                    <div class="ct-chart" id="websiteViewsChart"></div>
+                    <div class="ct-chart" id="OrderChart"></div>
                 </div>
                 <div class="card-body">
                     <h4 class="card-title">半年訂單</h4>
@@ -166,6 +166,14 @@
 
 
         }
+
+        let OrderChart = {
+            labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+            series: [
+                [20, 7, 1, 17, 3, 38, 50]
+            ]
+        };
+
         function LoadHouseData() {
             $.ajax({
                 type: "Get",
@@ -223,13 +231,63 @@
             ).mount('#memberCountblock')
         }
 
+       // 1. fetch 後端api 
+       // 2. 畫圖
+       // 3. 呼叫
+        
         $(document).ready(function () {
             LoadHouseData();
             LoadMemberData();
+            getOrderCount();
         });
+        
+        
+        $(window).resize(function () {
+            // reset the seq for charts drawing animations
+            seq = seq2 = 0;
+            setTimeout(function () {
+                initDashboardPageCharts();
+            }, 500);
+        });
+        
+        function initDashboardPageCharts(OrderChart) {
+            if ($('#OrderChart').length != 0) {
+               
 
+                optionsOrderChart = {
+                    lineSmooth: Chartist.Interpolation.cardinal({
+                        tension: 0
+                    }),
+                    low: 0,
+                    high: Math.max(...OrderChart.series[0]), // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                    chartPadding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    }
+                }
+                var OrderChart = new Chartist.Line('#OrderChart', OrderChart, optionsOrderChart);
+                md.startAnimationForLineChart(OrderChart);
+            }
 
-
-
+        }
+     
+        function getOrderCount() {
+            $.ajax({
+                type: "Get",
+                url: "/api/orders/count",
+                data: "",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response)
+                    OrderChart.labels = response.map(x => x.date.slice(-2));
+                    const arr = response.map(x => x.total);
+                    OrderChart.series = [arr];
+                    console.log(OrderChart.series);
+                    initDashboardPageCharts(OrderChart);
+                }       
+            });
+        }
     </script>
 }
