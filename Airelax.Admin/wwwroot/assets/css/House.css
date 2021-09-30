@@ -1,4 +1,5 @@
-﻿body {
+﻿[v-cloak] {
+    display: none;
 }
 
 .form-inline.ml-auto {
@@ -7,6 +8,16 @@
 
 .form-control {
     width: 100% !important;
+}
+
+.btn.btn-neutral.btn-icon.btn-round {
+    padding: 12px;
+}
+
+@media screen and (min-width: 452px) {
+    .btn.btn-neutral.btn-icon.btn-round {
+        padding: 12px 30px;
+    }
 }
 
 @media screen and (min-width: 768px) {

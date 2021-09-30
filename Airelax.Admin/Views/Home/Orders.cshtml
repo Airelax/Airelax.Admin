@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody class="orderTbody" v-if="orderData">
-                <tr>
+                <tr v-cloak>
                     <td class="myTd-name">{{orderData.orderId}}</td>
                     <td>{{orderData.customerName}}</td>
                     <td class="td-name"><a href="#">{{orderData.houseName}}</a></td>
@@ -86,6 +86,19 @@
                                 alert(`訂單 ${vm.orderData.orderId} 已刪除`)
                             }).catch((err) => console.log(err));
                         }
+                    },
+                    mounted() {
+                        this.fullWidth = window.innerWidth;
+                        window.onresize = () => {
+                            this.fullWidth = window.innerWidth;
+                            const search = document.querySelector(".btn.btn-neutral.btn-icon.btn-round")
+                            if (this.fullWidth < 452) {
+                                search.innerHTML = "<i class='material-icons'>search</i>"
+                            }
+                            else {
+                                search.innerHTML = "<i class='material-icons'>搜尋</i>"
+                            }
+                        };
                     }
                 }
             ).mount("#App");

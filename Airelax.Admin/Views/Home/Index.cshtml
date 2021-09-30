@@ -3,6 +3,14 @@
     ViewData["Current"] = "Dashboard";
 }
 
+@section topCSS{
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6">
@@ -12,7 +20,7 @@
                         <i class="material-icons">content_copy</i>
                     </div>
                     <p class="card-category">會員總數</p>
-                    <h3 id="memberCountblock" class="card-title">
+                    <h3 id="memberCountblock" class="card-title" v-cloak>
                         @* todo vue bind *@
                         {{MemberCount}}
                         <small>個</small>
@@ -32,7 +40,7 @@
                         <i class="material-icons">store</i>
                     </div>
                     <p class="card-category">收入</p>
-                    <h3 id="incomeBeforeAWeek" class="card-title">
+                    <h3 id="incomeBeforeAWeek" class="card-title" v-cloak>
                         ${{IncomeBeforeAWeek}}
                     </h3>
                 </div>
@@ -50,7 +58,7 @@
                         <i class="material-icons">info_outline</i>
                     </div>
                     <p class="card-category">房間總數</p>
-                    <h3 id="houseCountblock" class="card-title">
+                    <h3 id="houseCountblock" class="card-title" v-cloak>
                         {{HouseCount}}間
                     </h3>
                 </div>
@@ -163,16 +171,16 @@
 
             ],
             income: {},
-            popularLocation:{},
+            popularLocation: {},
         }
-        
-    $(document).ready(function () {
-        LoadHouseData();
-        LoadMemberData();
-        LoadIncomeData();
-         getOrderCount();
-         getPopularLocation();
-    });
+
+        $(document).ready(function () {
+            LoadHouseData();
+            LoadMemberData();
+            LoadIncomeData();
+            getOrderCount();
+            getPopularLocation();
+        });
 
         let OrderChart = {};
 
@@ -213,8 +221,8 @@
                 success: function (response) {
                     json.income = response
                     console.log(json.income)
-                    const opt={};
-                    opt.labels = Object.keys(json.income).map(x=>x.slice(-5));         
+                    const opt = {};
+                    opt.labels = Object.keys(json.income).map(x => x.slice(-5));
                     opt.series = [Object.values(json.income)];
                     IncomeBeforeAWeekBinding();
                     initDashboardPageCharts(opt, '#dailySalesChart');
@@ -245,8 +253,8 @@
             ).mount('#memberCountblock')
         }
 
-        
-        
+
+
         $(window).resize(function () {
             // reset the seq for charts drawing animations
             seq = seq2 = 0;
@@ -254,41 +262,41 @@
                 initDashboardPageCharts();
             }, 500);
         });
-        
-        function locationBind(){
+
+        function locationBind() {
             Vue.createApp({
-                data(){
+                data() {
                     return {
-                      popularLocation:{}      
+                        popularLocation: {}
                     };
                 },
-                methods:{
-                   
+                methods: {
+
                 }
             })
         }
-        
-        
-        function getPopularLocation(){
+
+
+        function getPopularLocation() {
             const now = moment().format('YYYY-MM-DD');
-            const weekAgo = moment().subtract(1,'w').format('YYYY-MM-DD');
-           
+            const weekAgo = moment().subtract(1, 'w').format('YYYY-MM-DD');
+
             fetch(`/api/trip/popular/${weekAgo}/${now}`)
-            .then(response =>response.json())
-            .then(data=>{
-                const opt = {};
-                opt.labels = data.map(x =>x.town);
-                opt.series = [data.map(x => x.total)];
-                drawPopularLocation(opt);
-            }).catch(err=>console.log(err));
+                .then(response => response.json())
+                .then(data => {
+                    const opt = {};
+                    opt.labels = data.map(x => x.town);
+                    opt.series = [data.map(x => x.total)];
+                    drawPopularLocation(opt);
+                }).catch(err => console.log(err));
         }
 
         function IncomeBeforeAWeekBinding() {
             Vue.createApp({
                 data: function () {
                     return {
-                      
-                        IncomeBeforeAWeek: Object.values(json.income).reduce((a, b)=>a+b)
+
+                        IncomeBeforeAWeek: Object.values(json.income).reduce((a, b) => a + b)
                     }
                 }
             }).mount('#incomeBeforeAWeek')
@@ -310,15 +318,15 @@
                         bottom: 0,
                         left: 30
                     },
-                    
+
                 }
-                var OrderChart = new Chartist.Line(el, OrderChart, optionsOrderChart, 
-                {plugins: [Chartist.plugins.tooltip()]});
+                var OrderChart = new Chartist.Line(el, OrderChart, optionsOrderChart,
+                    { plugins: [Chartist.plugins.tooltip()] });
                 md.startAnimationForLineChart(OrderChart);
             }
 
         }
-     
+
         function getOrderCount() {
             $.ajax({
                 type: "Get",
@@ -326,20 +334,20 @@
                 data: "",
                 dataType: "json",
                 success: function (response) {
-                    OrderChart.labels = response.map(x => x.date.slice(-2)+'月');
+                    OrderChart.labels = response.map(x => x.date.slice(-2) + '月');
                     const arr = response.map(x => x.total);
-                    OrderChart.series = [arr];  
-                    initDashboardPageCharts(OrderChart,'#OrderChart');
-                }       
+                    OrderChart.series = [arr];
+                    initDashboardPageCharts(OrderChart, '#OrderChart');
+                }
             });
         }
-        
-    
-        
-       function drawPopularLocation(dataCompletedTasksChart){
+
+
+
+        function drawPopularLocation(dataCompletedTasksChart) {
             optionsCompletedTasksChart = {
                 low: 0,
-                high: Math.max(...dataCompletedTasksChart.series[0]) , // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                high: Math.max(...dataCompletedTasksChart.series[0]), // creative tim: we recommend you to set the high sa the biggest value + something for a better look
                 chartPadding: {
                     top: 0,
                     right: 0,
@@ -347,11 +355,11 @@
                     left: 0
                 }
             }
-    
-                var completedTasksChart = new Chartist.Bar('#completedTasksChart', dataCompletedTasksChart, optionsCompletedTasksChart);
-    
-                // start animation for the Completed Tasks Chart - Line Chart
-                md.startAnimationForLineChart(completedTasksChart);
-       }
+
+            var completedTasksChart = new Chartist.Bar('#completedTasksChart', dataCompletedTasksChart, optionsCompletedTasksChart);
+
+            // start animation for the Completed Tasks Chart - Line Chart
+            md.startAnimationForLineChart(completedTasksChart);
+        }
     </script>
 }

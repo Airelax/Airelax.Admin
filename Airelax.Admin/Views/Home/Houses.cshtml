@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody class="houseTbody" v-if="houseData">
-                <tr>
+                <tr v-cloak>
                     <td>
                         <div class="img-container">
                             <img :src="houseData.photo" alt="房源圖片" />
@@ -76,6 +76,7 @@
                         return {
                             houseId: '',
                             houseData: houseData,
+                            fullWidth: 0,
                         }
                     },
                     methods: {
@@ -118,6 +119,19 @@
                                 alert(`房源 ${vm.houseData.title} 已刪除`)
                             }).catch((err) => console.log(err));
                         }
+                    },
+                    mounted() {
+                        this.fullWidth = window.innerWidth;
+                        window.onresize = () => {
+                            this.fullWidth = window.innerWidth;
+                            const search = document.querySelector(".btn.btn-neutral.btn-icon.btn-round")
+                            if (this.fullWidth < 452) {
+                                search.innerHTML = "<i class='material-icons'>search</i>"
+                            }
+                            else {
+                                search.innerHTML = "<i class='material-icons'>搜尋</i>"
+                            }
+                        };
                     }
                 }
             ).mount('#App')
