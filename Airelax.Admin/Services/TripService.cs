@@ -25,13 +25,12 @@ namespace Airelax.Admin.Services
                 .Where(x => x.OrderDetail.StartDate >= startDate && x.OrderDetail.StartDate <= endDate)
                 .Select(x => new {Date = x.OrderDetail.StartDate, Location = x.House.HouseLocation}).ToListAsync();
 
-            var popularLocations = houseLocations?.GroupBy(x => (GetDateCondition(x.Date, dateType), x.Location.Town))
+            var popularLocations = houseLocations?.GroupBy(x => x.Location.Town)
                 .Select(x => new PopularLocation
                 {
-                    Date = x.Key.Item1,
-                    Town = x.Key.Town,
+                    Town = x.Key,
                     Total = x.Count()
-                });
+                }).OrderByDescending(x => x.Total).Take(5);
 
             return popularLocations;
         }

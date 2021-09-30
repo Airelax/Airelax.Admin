@@ -1,9 +1,9 @@
-﻿
-@{
+﻿@{
     Layout = "_Layout";
+    ViewData["Current"] = "收入";
 }
 
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="row">
         <div class="col-md-8">
             <div class="card card-chart">
@@ -36,9 +36,9 @@
                 <div class="col-3 col-md-12">
                     <button class="btn btn-primary btn-round " id="monthBtn">按月</button>
                 </div>
-                <div class="col-3 col-md-12">
-                    <button class="btn btn-primary btn-round " id="weekBtn">按週</button>
-                </div>
+                @* <div class="col-3 col-md-12"> *@
+                @*     <button class="btn btn-primary btn-round " id="weekBtn">按週</button> *@
+                @* </div> *@
                 <div class="col-3 col-md-12">
                     <button class="btn btn-primary btn-round " id="dayBtn">按日</button>
                 </div>
@@ -54,56 +54,55 @@
         const startDateInput = $("#startDateInput");
         const endDateInput = $("#endDateInput");
         const monthBtn = $("#monthBtn");
-        const weekBtn = $("#weekBtn");
+        //const weekBtn = $("#weekBtn");
         const dayBtn = $("#dayBtn");
-        const dayMiliSec = 86400000;
+        const dayMiniSec = 86400000;
         let sd;
         let ed;
+        const data = {};
         startDateInput.on("change", () => {
             sd = startDateInput.val();
+            //LoadIncomeData(sd, ed);
+            
         });
         endDateInput.on("change", () => {
             ed = endDateInput.val();
+            //LoadIncomeData(sd, ed);
         });
         //按月
         monthBtn.on("click", () => {
-            LoadIncomeData(sd, ed);
+             LoadIncomeData(sd, ed, 2);
             //放資料進chart
         });
         //按週
-        weekBtn.on("click", () => {
-            LoadIncomeData(sd, ed);
-            //放資料進chart
-        });
+        // weekBtn.on("click", () => {
+        //     LoadIncomeData(sd, ed);
+        //     //放資料進chart
+        // });
         //按日
         dayBtn.on("click", () => {
-            if ((new Date(ed) - new Date(sd)) / dayMiliSec > 7) {
+            if ((moment(ed) - moment(sd)) / dayMiniSec > 7) {
                 alert("重選起始日期，不可間隔七天")
                 return;
             }
-            LoadIncomeData(sd, ed);
+            LoadIncomeData(sd, ed, 0);
             //放資料進chart
         });
 
-
-
-
-        function LoadIncomeData(startDate, endDate) {
-            if (startDate !== null && endDate !== null) {
+        function LoadIncomeData(startDate, endDate, by) {
+            if (startDate && endDate) {
                 $.ajax({
                     type: "Get",
-                    url: `/api/Income/${startDate}/${endDate}`,
+                    url: `/api/Income/${startDate}/${endDate}?type=${by}`,
                     data: "",
                     dataType: "json",
                     success: function (response) {
                         responseJson = response
-                        let data = {
-                            labels: Object.keys(responseJson).map(x => x.slice(-5)),
-                            series: [
-                                Object.values(responseJson)
-                            ]
-                        };
-                        initIncomeChart(data);
+                        data.labels = Object.keys(responseJson).map(x => by===0?x.slice(-5):x.slice(-2));
+                        data.series = [
+                            Object.values(responseJson)
+                        ];
+                        drawIncomeChart(data); 
                     }
                 })
             }
@@ -112,8 +111,7 @@
             }
         }
 
-
-        function initIncomeChart(data) {
+        function drawIncomeChart(data) {
             if ($('#incomeChart').length != 0) {
                 dataIncomeChart = data;
 
@@ -124,16 +122,39 @@
                     low: 0,
                     high: Math.max(...data.series[0]), // creative tim: we recommend you to set the high sa the biggest value + something for a better look
                     chartPadding: {
-                        top: 0,
+                        top: 20,
                         right: 50,
                         bottom: 0,
                         left: 50
                     },
                 }
-                var incomeChart = new Chartist.Line('#incomeChart', dataIncomeChart, optionsIncomeChart);
+                const incomeChart = new Chartist.Line('#incomeChart', dataIncomeChart, optionsIncomeChart);
 
                 md.startAnimationForLineChart(incomeChart);
             }
         }
+        
+        // function vueCreate(){
+        //     Vue.createApp({
+        //         data(){
+        //          return{
+        //              chartData: data,
+        //          };
+        //         },
+        //         methods:{
+        //             initIncomeChart(data, by = 1){
+        //                 const copy  = Object.assign({},data);
+        //                 if (by === 1){
+        //                     copy.labels = copy.labels.map(x => x.slice(-5));
+        //                 }else if (by === 2){
+        //                     copy.labels = copy.labels.map(x => x.substring(5,2));
+        //                    
+        //                 }
+        //                 drawIncomeChart(copy);
+        //             }
+        //         },
+        //        
+        //     }).mount('#app');
+        // }
     </script>
-} 
+}

@@ -17,10 +17,12 @@ namespace Airelax.EntityFramework.Repositories
     public class OrderRepository : IOrderRepository
     {
         private readonly AirelaxContext _context;
+
         public OrderRepository(AirelaxContext context)
         {
             _context = context;
         }
+
         public IQueryable<Order> GetTotalInCertainRange(DateTime startDate, DateTime endDate)
         {
             var totalInCertainRange = _context.Orders
@@ -28,8 +30,7 @@ namespace Airelax.EntityFramework.Repositories
                 .Include(x => x.OrderPriceDetail)
                 .Include(x => x.Payment)
                 .Where(x => x.IsDeleted == false
-
-                            && startDate < x.OrderDate
+                            && startDate <= x.OrderDate
                             && x.OrderDate <= endDate);
             return totalInCertainRange;
         }
@@ -46,6 +47,7 @@ namespace Airelax.EntityFramework.Repositories
 
             return trips;
         }
+
         public IQueryable<Order> GetAll()
         {
             return GetOrderIncludeAll().Where(x => !x.IsDeleted);
@@ -83,7 +85,7 @@ namespace Airelax.EntityFramework.Repositories
                 .Include(x => x.OrderPriceDetail)
                 .Include(x => x.Payment)
                 .Include(x => x.House)
-                .ThenInclude(x=>x.HouseLocation)
+                .ThenInclude(x => x.HouseLocation)
                 .Include(x => x.Member);
         }
     }

@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    ViewData["Current"] = "Dashboard";
 }
 
 <div class="container-fluid">
@@ -14,12 +15,12 @@
                     <h3 id="memberCountblock" class="card-title">
                         @* todo vue bind *@
                         {{MemberCount}}
-                        <small>間</small>
+                        <small>個</small>
                     </h3>
                 </div>
                 <div class="card-footer">
                     <div class="stats">
-                        <i class="material-icons">date_range</i> 123
+                        <i class="material-icons">date_range</i> last year
                     </div>
                 </div>
             </div>
@@ -32,9 +33,7 @@
                     </div>
                     <p class="card-category">收入</p>
                     <h3 id="incomeBeforeAWeek" class="card-title">
-                        @* todo vue bind *@
-                        $34,245
-                        {{IncomeBeforeAWeek}}
+                        ${{IncomeBeforeAWeek}}
                     </h3>
                 </div>
                 <div class="card-footer">
@@ -52,26 +51,25 @@
                     </div>
                     <p class="card-category">房間總數</p>
                     <h3 id="houseCountblock" class="card-title">
-                        @* todo vue bind *@
-                        {{HouseCount}}
+                        {{HouseCount}}間
                     </h3>
                 </div>
                 <div class="card-footer">
                     <div class="stats">
-                        <i class="material-icons">local_offer</i> 123
+                        <i class="material-icons">local_offer</i> last year
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card card-chart">
                 <div class="card-header card-header-success">
                     <div class="ct-chart" id="dailySalesChart"></div>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title">半年收入</h4>
+                    <h4 class="card-title">一周收入</h4>
                     <p class="card-category">
                         <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
                     </p>
@@ -83,7 +81,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card card-chart">
                 <div class="card-header card-header-warning">
                     <div class="ct-chart" id="OrderChart"></div>
@@ -99,7 +97,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card card-chart">
                 <div class="card-header card-header-danger">
                     <div class="ct-chart" id="completedTasksChart"></div>
@@ -164,17 +162,19 @@
                 { memberCount: "NaN" },
 
             ],
-            income: {
-
-            }
+            income: {},
+            popularLocation:{},
         }
+        
+    $(document).ready(function () {
+        LoadHouseData();
+        LoadMemberData();
+        LoadIncomeData();
+         getOrderCount();
+         getPopularLocation();
+    });
 
-        let OrderChart = {
-            labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-            series: [
-                [20, 7, 1, 17, 3, 38, 50]
-            ]
-        };
+        let OrderChart = {};
 
         function LoadHouseData() {
             $.ajax({
@@ -183,8 +183,6 @@
                 data: "",
                 dataType: "json",
                 success: function (response) {
-                    console.log(response)
-
                     json.count[0] = response
                     HouseCountBinding()
                 }
@@ -198,8 +196,6 @@
                 data: "",
                 dataType: "json",
                 success: function (response) {
-                    console.log(response)
-
                     json.count[1] = response
                     MemberCountBinding()
                 }
@@ -216,7 +212,12 @@
                 dataType: "json",
                 success: function (response) {
                     json.income = response
-                    IncomeBeforeAWeekBinding()
+                    console.log(json.income)
+                    const opt={};
+                    opt.labels = Object.keys(json.income).map(x=>x.slice(-5));         
+                    opt.series = [Object.values(json.income)];
+                    IncomeBeforeAWeekBinding();
+                    initDashboardPageCharts(opt, '#dailySalesChart');
                 }
             })
         }
@@ -254,30 +255,49 @@
             }, 500);
         });
         
+        function locationBind(){
+            Vue.createApp({
+                data(){
+                    return {
+                      popularLocation:{}      
+                    };
+                },
+                methods:{
+                   
+                }
+            })
+        }
         
-              
+        
+        function getPopularLocation(){
+            const now = moment().format('YYYY-MM-DD');
+            const weekAgo = moment().subtract(1,'w').format('YYYY-MM-DD');
+           
+            fetch(`/api/trip/popular/${weekAgo}/${now}`)
+            .then(response =>response.json())
+            .then(data=>{
+                const opt = {};
+                opt.labels = data.map(x =>x.town);
+                opt.series = [data.map(x => x.total)];
+                drawPopularLocation(opt);
+            }).catch(err=>console.log(err));
+        }
 
         function IncomeBeforeAWeekBinding() {
             Vue.createApp({
                 data: function () {
                     return {
-                        IncomeBeforeAWeek: json.income
+                      
+                        IncomeBeforeAWeek: Object.values(json.income).reduce((a, b)=>a+b)
                     }
                 }
             }).mount('#incomeBeforeAWeek')
         }
 
-        $(document).ready(function () {
-            LoadHouseData();
-            LoadMemberData();
-            LoadIncomeData();
-             getOrderCount();
-        });
 
 
-
-        function initDashboardPageCharts(OrderChart) {
-            if ($('#OrderChart').length != 0) {
+        function initDashboardPageCharts(OrderChart, el) {
+            if ($(el).length != 0) {
                 optionsOrderChart = {
                     lineSmooth: Chartist.Interpolation.cardinal({
                         tension: 0
@@ -286,12 +306,14 @@
                     high: Math.max(...OrderChart.series[0]), // creative tim: we recommend you to set the high sa the biggest value + something for a better look
                     chartPadding: {
                         top: 0,
-                        right: 0,
+                        right: 20,
                         bottom: 0,
-                        left: 0
-                    }
+                        left: 30
+                    },
+                    
                 }
-                var OrderChart = new Chartist.Line('#OrderChart', OrderChart, optionsOrderChart);
+                var OrderChart = new Chartist.Line(el, OrderChart, optionsOrderChart, 
+                {plugins: [Chartist.plugins.tooltip()]});
                 md.startAnimationForLineChart(OrderChart);
             }
 
@@ -304,14 +326,32 @@
                 data: "",
                 dataType: "json",
                 success: function (response) {
-                    console.log(response)
-                    OrderChart.labels = response.map(x => x.date.slice(-2));
+                    OrderChart.labels = response.map(x => x.date.slice(-2)+'月');
                     const arr = response.map(x => x.total);
-                    OrderChart.series = [arr];
-                    console.log(OrderChart.series);
-                    initDashboardPageCharts(OrderChart);
+                    OrderChart.series = [arr];  
+                    initDashboardPageCharts(OrderChart,'#OrderChart');
                 }       
             });
         }
+        
+    
+        
+       function drawPopularLocation(dataCompletedTasksChart){
+            optionsCompletedTasksChart = {
+                low: 0,
+                high: Math.max(...dataCompletedTasksChart.series[0]) , // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                chartPadding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                }
+            }
+    
+                var completedTasksChart = new Chartist.Bar('#completedTasksChart', dataCompletedTasksChart, optionsCompletedTasksChart);
+    
+                // start animation for the Completed Tasks Chart - Line Chart
+                md.startAnimationForLineChart(completedTasksChart);
+       }
     </script>
 }
