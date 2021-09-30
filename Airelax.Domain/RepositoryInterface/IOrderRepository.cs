@@ -17,5 +17,7 @@ namespace Airelax.Domain.RepositoryInterface
         Task<IEnumerable<Order>> GetTrips(string memberId);
         IQueryable<Order> GetAll();
         void DeleteOrder(Order order);
+        IQueryable<Order> GetTotalInCertainRange(DateTime startDate, DateTime endDate);
+        
     }
 }

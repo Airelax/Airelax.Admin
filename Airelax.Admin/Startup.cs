@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Define = Airelax.Admin.Defines.Define;
 
 namespace Airelax.Admin
 {
@@ -32,6 +33,7 @@ namespace Airelax.Admin
         public void ConfigureServices(IServiceCollection services)
         {
             string connectString;
+            
             if (HostEnvironment.IsDevelopment())
             {
                 connectString = Define.Database.LOCAL_CONNECT_STRING;
@@ -77,7 +79,7 @@ namespace Airelax.Admin
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseExceptionHandler(builder => builder.Run(async context => await ExceptionHandler.HandleError(context)));
             app.UseStaticFiles();
 
