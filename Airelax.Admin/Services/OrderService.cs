@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Airelax.Admin;
 
 namespace Airelax.Domain
 {
@@ -20,6 +21,7 @@ namespace Airelax.Domain
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IHouseRepository _houseRepository;
+        private const int pageCount = 20;
 
         public OrderService(IOrderRepository orderRepository, IHouseRepository houseRepository)
         {
@@ -58,6 +60,31 @@ namespace Airelax.Domain
             _orderRepository.SaveChanges();
         }
 
+        public SearchOrdersResponse GetRangeOrder(IncomeInput orderInput)
+        {
+            var ordersQueryable = _orderRepository.GetTotalInCertainRange(orderInput.StartDate, orderInput.EndDate);
+            var totalCount = ordersQueryable.Count();
+            var orders = ordersQueryable.Skip((orderInput.Page - 1) * pageCount).Take(pageCount).ToList();
+            var orderViewModels = orders.Select(order =>
+                new OrderViewModel()
+                {
+                    OrderId = order.Id,
+                    CustomerName = order.Member.Name,
+                    HouseName = order.House.Title,
+                    OrderDate = order.OrderDate.ToString("yyyy-MM-dd"),
+                    StartDate = order.OrderDetail.StartDate.ToString("yyyy-MM-dd"),
+                    EndDate = order.OrderDetail.EndDate.ToString("yyyy-MM-dd")
+                }
+            ).ToList();
+
+            var SearchOrdersResponse = new SearchOrdersResponse()
+            {
+                Total = totalCount,
+                OrderViewModels = orderViewModels
+            };
+            return SearchOrdersResponse;
+        }
+
         public async Task<IEnumerable<OrderCount>> GetCount()
         {
             var now = DateTime.Now;
@@ -65,7 +92,7 @@ namespace Airelax.Domain
             var orderDates = await _orderRepository.GetAll()
                 .Where(x => x.OrderDate > new DateTime(halfYear.Year, halfYear.Month, 1)
                             && x.OrderDate < new DateTime(now.Year, now.Month, 1))
-                .Select(x => new {Date = x.OrderDate})
+                .Select(x => new { Date = x.OrderDate })
                 .ToListAsync();
             return orderDates.GroupBy(x => x.Date.ToString("yyyy-MM")).OrderBy(x => x.Key).Select(x => new OrderCount()
             {

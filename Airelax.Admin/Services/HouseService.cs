@@ -16,6 +16,7 @@ namespace Airelax.Admin.Services
     public class HouseService : IHouseService
     {
         private readonly IHouseRepository _houseRepository;
+        private const int pageCount = 10;
 
         public HouseService(IHouseRepository houseRepository)
         {
@@ -37,6 +38,34 @@ namespace Airelax.Admin.Services
             };
             return houseViewModel;
         }
+
+        public SearchHousesResponse GetRangeHouse(IncomeInput houseInput)
+        {
+            var housesQueryable = _houseRepository.GetTotalInCertainRange(houseInput.StartDate, houseInput.EndDate);
+            var totalCount = housesQueryable.Count();
+            var houses = housesQueryable.Skip((houseInput.Page - 1) * pageCount).Take(pageCount).ToList();
+            var houseViewModels = houses.Select(house =>
+                new HouseViewModel()
+                {
+                    Photo = house.Photos.FirstOrDefault()?.Image,
+                    Title = house.Title,
+                    HouseId = house.Id,
+                    OwnerId = house.OwnerId,
+                    CreateTime = house.CreateTime.ToString("yyyy-MM-dd"),
+                    City = house.HouseLocation.City,
+                    Town = house.HouseLocation.Town,
+                    Status = (int)house.Status
+                }
+            ).ToList();
+
+            var SearchHousesResponse = new SearchHousesResponse()
+            {
+                Total = totalCount,
+                HouseViewModels = houseViewModels
+            };
+            return SearchHousesResponse;
+        }
+
         public async Task OffShelf(HouseIdInput input)
         {
             var house = await FindHouseId(input.HouseId);

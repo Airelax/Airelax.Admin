@@ -8,15 +8,37 @@
 }
 
 <div id="App">
-    <nav class="navbar navbar-expand-lg bg-warning">
+    <nav class="navbar navbar-expand-lg bg-warning" v-show="isShow">
         <form class="form-inline ml-auto">
+            <div v-on:click="Change">
+                <i class="fas fa-sync-alt" style="color: #66bb6a;"></i>
+            </div>
             <div class="form-group has-white">
                 <input type="text" class="form-control" placeholder="輸入房源ID" maxlength="11" v-model="houseId" />
             </div>
-            <button type="submit" class="btn btn-neutral btn-icon btn-round" v-on:click.prevent="Search">
+            <button type="submit" class="btn btn-icon btn-round" v-on:click.prevent="Initialize(),Search()">
                 <i class="material-icons">搜尋</i>
             </button>
         </form>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg bg-success" v-show="!isShow" v-cloak>
+        <div v-on:click="Change">
+            <i class="fas fa-sync-alt" style="color: #ffa726;"></i>
+        </div>
+        <div class="dateTimeContainer">
+            <div class="myContainer">
+                <label for="startDate">起始時間</label>
+                <input class="m-2" type="date" id="startDateInput" v-model="startDate" />
+            </div>
+            <div class="myContainer">
+                <label for="endDate">結束時間</label>
+                <input class="m-2" type="date" id="endDateInput" v-model="endDate" />
+            </div>
+            <button type="submit" class="btn btn-icon btn-round" id="bigListBtn" v-on:click.prevent="Initialize(),SearchRange(1)">
+                <i class="material-icons">搜尋</i>
+            </button>
+        </div>
     </nav>
 
     <div class="table-responsive">
@@ -49,13 +71,59 @@
                     <td>{{houseData.town}}</td>
                     <td class="td-actions">
                         <div>
-                            <button v-if="houseData.status == 1" type="button" class="btn btn-simple" id="btn" v-on:click.prevent="OffShelf()">
+                            <button type="button"
+                                    class="btn btn-simple"
+                                    v-if="houseData.status == 1"
+                                    v-on:click.prevent="OffShelf(houseData.houseId, houseData.status, 'single')"
+                                    v-bind:class="{ 'btn-success':houseData.status == 3 }">
                                 <i class="fas fa-sign-in-alt"></i>
                             </button>
-                            <button v-else type="button" class="btn btn-success" id="btn" v-on:click.prevent="OffShelf()">
+                            <button type="button"
+                                    class="btn btn-success"
+                                    v-else
+                                    v-on:click.prevent="OffShelf(houseData.houseId, houseData.status, 'single')"
+                                    v-bind:class="{ 'btn-simple':houseData.status == 1 }">
                                 <i class="fas fa-sign-in-alt"></i>
                             </button>
-                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteHouse()">
+                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteHouse(houseData.houseId,'single')">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody class="houseTbody" v-if="housesResponse" v-for="houseList in housesResponse.houseViewModels">
+                <tr v-cloak>
+                    <td>
+                        <div class="img-container">
+                            <img :src="houseList.photo" alt="房源圖片" />
+                        </div>
+                    </td>
+                    <td class="td-name">
+                        <a href="#">{{houseList.title}}</a>
+                    </td>
+                    <td>{{houseList.houseId}}</td>
+                    <td>{{houseList.ownerId}}</td>
+                    <td>{{houseList.createTime}}</td>
+                    <td>{{houseList.city}}</td>
+                    <td>{{houseList.town}}</td>
+                    <td class="td-actions">
+                        <div>
+                            <button type="button"
+                                    class="btn btn-simple"
+                                    v-if="houseList.status == 1"
+                                    v-on:click.prevent="OffShelf(houseList.houseId, houseList.status, 'List')"
+                                    v-bind:class="{ 'btn-success':houseList.status == 3 }">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-success"
+                                    v-else
+                                    v-on:click.prevent="OffShelf(houseList.houseId, houseList.status, 'List')"
+                                    v-bind:class="{ 'btn-simple':houseList.status == 1 }">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteHouse(houseList.houseId,'List')">
                                 <i class="far fa-trash-alt"></i>
                             </button>
                         </div>
@@ -64,11 +132,34 @@
             </tbody>
         </table>
     </div>
+    <div v-if="housesResponse" v-cloak>
+        <div class="page d-flex justify-content-center">
+            <nav aria-label="Page navigation example d-block">
+                <ul class="pagination rounded-circle">
+                    <li class="page-item" v-show="page != 1">
+                        <button class="text-dark" v-on:click.prevent="Initialize(),SearchRange(page - 1)">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                    </li>
+                    <li class="page-item" v-for="item in getPage" :key="item">
+                        <button class="text-dark" v-on:click.prevent="Initialize(),SearchRange(item)" v-bind:class="{ 'active':item === page }">{{ item }}</button>
+                    </li>
+                    <li class="page-item" v-show="page != getPage">
+                        <button class="text-dark" v-on:click.prevent="Initialize(),SearchRange(page + 1)">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="subText">1 - {{ getPage }} 頁，共 {{ housesResponse.total }} 筆房源</div>
+    </div>
 </div>
 
 @section Scripts{
     <script>
         const houseData = null;
+        const housesResponse = null;
         function GetHouse() {
             Vue.createApp(
                 {
@@ -76,10 +167,18 @@
                         return {
                             houseId: '',
                             houseData: houseData,
-                            fullWidth: 0,
+                            isShow: true,
+                            housesResponse: housesResponse,
+                            startDate: '',
+                            endDate: '',
+                            page: 1,
                         }
                     },
                     methods: {
+                        Initialize: function () {
+                            this.houseData = null
+                            this.housesResponse = null
+                        },
                         Search: function () {
                             axios({
                                 method: 'get',
@@ -91,48 +190,85 @@
                                 alert(`搜尋不到此房源`)
                             });
                         },
-                        OffShelf: function () {
-                            const vm = this
+                        OffShelf: function (Id, HouseStatus, Status) {
                             axios({
                                 method: 'post',
                                 url: '/api/Houses',
-                                data: { HouseId: this.houseData.houseId }
-                            }).then(function () {
-                                const btn = document.querySelector("#btn")
-                                if (vm.houseData.status == 1) {
-                                    btn.classList = "btn btn-success"
-                                    vm.houseData.status = 3
+                                data: { HouseId: Id }
+                            }).then(() => {
+                                if (Status == "single") {
+                                    if (HouseStatus == 1) {
+                                        this.houseData.status = 3
+                                    }
+                                    else {
+                                        this.houseData.status = 1
+                                    }
                                 }
-                                else if (vm.houseData.status == 3) {
-                                    btn.classList = "btn btn-simple"
-                                    vm.houseData.status = 1
+                                else {
+                                    const index = this.housesResponse.houseViewModels.findIndex(x => x.houseId == Id)
+                                    if (HouseStatus == 1) {
+                                        this.housesResponse.houseViewModels[index].status = 3
+                                    }
+                                    else if (HouseStatus == 3) {
+                                        this.housesResponse.houseViewModels[index].status = 1
+                                    }
                                 }
                             }).catch((err) => console.log(err));
                         },
-                        DeleteHouse: function () {
-                            const vm = this
+                        DeleteHouse: function (Id, status) {
                             axios({
                                 method: 'delete',
                                 url: '/api/Houses',
-                                data: { HouseId: this.houseData.houseId }
-                            }).then(function () {
-                                alert(`房源 ${vm.houseData.title} 已刪除`)
+                                data: { HouseId: Id }
+                            }).then(() => {
+                                if (status == "single") {
+                                    this.houseData = null
+                                }
+                                else {
+                                    this.housesResponse.houseViewModels.splice(this.housesResponse.houseViewModels.findIndex((x) => x.houseId == Id), 1)
+                                    this.housesResponse.total -= 1
+                                }
+                                alert(`房源 ${Id} 已刪除`)
                             }).catch((err) => console.log(err));
-                        }
+                        },
+                        Change: function () {
+                            this.isShow = !this.isShow;
+                        },
+                        SearchRange: function (page) {
+                            axios({
+                                method: 'get',
+                                url: `/api/Houses/${this.startDate}/${this.endDate}/${page}`,
+                            }).then((res) => {
+                                this.housesResponse = res.data
+                                this.page = page
+                            }).catch((err) => {
+                                console.log(err)
+                                alert(`請選擇起始日期與結束日期`)
+                            });
+                        },
                     },
                     mounted() {
                         this.fullWidth = window.innerWidth;
                         window.onresize = () => {
                             this.fullWidth = window.innerWidth;
-                            const search = document.querySelector(".btn.btn-neutral.btn-icon.btn-round")
+                            const search = document.querySelectorAll(".btn-round")
                             if (this.fullWidth < 452) {
-                                search.innerHTML = "<i class='material-icons'>search</i>"
+                                search[0].innerHTML = "<i class='material-icons'>search</i>"
+                                search[1].innerHTML = "<i class='material-icons'>search</i>"
                             }
                             else {
-                                search.innerHTML = "<i class='material-icons'>搜尋</i>"
+                                search[0].innerHTML = "<i class='material-icons'>搜尋</i>"
+                                search[1].innerHTML = "<i class='material-icons'>搜尋</i>"
                             }
                         };
-                    }
+                    },
+                    computed: {
+                        getPage: function () {
+                            return Math.ceil(
+                                Number(this.housesResponse.total) / 20
+                            );
+                        },
+                    },
                 }
             ).mount('#App')
         }

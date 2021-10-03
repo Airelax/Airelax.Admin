@@ -220,7 +220,6 @@
                 dataType: "json",
                 success: function (response) {
                     json.income = response
-                    console.log(json.income)
                     const opt = {};
                     opt.labels = Object.keys(json.income).map(x => x.slice(-5));
                     opt.series = [Object.values(json.income)];

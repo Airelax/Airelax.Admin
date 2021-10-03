@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Airelax.Domain.DomainObject;
 using Airelax.Domain.Houses;
 using Airelax.Domain.RepositoryInterface;
+using Airelax.EntityFramework.DbContexts;
 using Lazcat.Infrastructure.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -15,10 +16,23 @@ namespace Airelax.EntityFramework.Repositories
     public class HouseRepository : IHouseRepository
     {
         private readonly IRepository _repository;
+        private readonly AirelaxContext _context;
 
-        public HouseRepository(IRepository repository)
+        public HouseRepository(IRepository repository, AirelaxContext context)
         {
             _repository = repository;
+            _context = context;
+        }
+
+        public IQueryable<House> GetTotalInCertainRange(DateTime startDate, DateTime endDate)
+        {
+            var totalInCertainRange = _context.Houses
+                .Include(x => x.Photos)
+                .Include(x => x.HouseLocation)
+                .Where(x => x.IsDeleted == false
+                            && startDate <= x.CreateTime
+                            && x.CreateTime <= endDate);
+            return totalInCertainRange;
         }
 
         public IQueryable<House> GetAll()

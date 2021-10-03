@@ -29,6 +29,8 @@ namespace Airelax.EntityFramework.Repositories
                 .Include(x => x.OrderDetail)
                 .Include(x => x.OrderPriceDetail)
                 .Include(x => x.Payment)
+                .Include(x => x.House)
+                .Include(x => x.Member)
                 .Where(x => x.IsDeleted == false
                             && startDate <= x.OrderDate
                             && x.OrderDate <= endDate);

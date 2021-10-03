@@ -21,7 +21,7 @@ namespace Airelax.Admin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Houses()
+        public IActionResult Houses()
         {
             return View();
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Airelax.Domain.RepositoryInterface;
 using System.Linq;
 using Airelax.Admin.Models;
+using System;
 
 namespace Airelax.Admin.Controllers
 {
@@ -41,6 +42,15 @@ namespace Airelax.Admin.Controllers
         public async Task<HouseViewModel> GetHouse(string id)
         {
             return await _houseService.GetHouseAsync(id);
+        }
+
+        [HttpGet]
+        [Route("{startDate}/{endDate}/{page}")]
+        public SearchHousesResponse GetRangeHouse(DateTime startDate, DateTime endDate, int page)
+        {
+            var houseInput = new IncomeInput { StartDate = startDate, EndDate = endDate, Page = page };
+            var houseLists = _houseService.GetRangeHouse(houseInput);
+            return houseLists;
         }
 
         [HttpPost]

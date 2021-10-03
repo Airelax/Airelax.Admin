@@ -16,7 +16,7 @@ namespace Airelax.Admin
         /// 區間之結束時間
         /// </summary>
         public DateTime EndDate { get; set; }
-
         public DateType DateType { get; set; }
+        public int Page { get; set; }
     }
 }

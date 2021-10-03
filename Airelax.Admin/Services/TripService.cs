@@ -23,7 +23,7 @@ namespace Airelax.Admin.Services
         {
             var houseLocations = await _orderRepository.GetAll()
                 .Where(x => x.OrderDetail.StartDate >= startDate && x.OrderDetail.StartDate <= endDate)
-                .Select(x => new {Date = x.OrderDetail.StartDate, Location = x.House.HouseLocation}).ToListAsync();
+                .Select(x => new { Date = x.OrderDetail.StartDate, Location = x.House.HouseLocation }).ToListAsync();
 
             var popularLocations = houseLocations?.GroupBy(x => x.Location.Town)
                 .Select(x => new PopularLocation
@@ -44,7 +44,6 @@ namespace Airelax.Admin.Services
                     return date.ToString(date.ToString("yyyy-MM-dd"));
                 case DateType.Week:
                     return default;
-                    break;
                 case DateType.Month:
                     return date.ToString(date.ToString("yyyy-MM"));
                 default:

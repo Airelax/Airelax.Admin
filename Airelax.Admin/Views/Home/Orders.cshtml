@@ -8,15 +8,37 @@
 }
 
 <div id="App">
-    <nav class="navbar navbar-expand-lg bg-warning">
+    <nav class="navbar navbar-expand-lg bg-warning" v-show="isShow">
         <form class="form-inline ml-auto">
+            <div v-on:click="Change">
+                <i class="fas fa-sync-alt" style="color: #66bb6a;"></i>
+            </div>
             <div class="form-group has-white">
                 <input type="text" class="form-control" placeholder="輸入訂單ID" maxlength="11" v-model="orderId" />
             </div>
-            <button type="submit" class="btn btn-neutral btn-icon btn-round" v-on:click.prevent="Search">
+            <button type="submit" class="btn btn-icon btn-round" v-on:click.prevent="Initialize(),Search()">
                 <i class="material-icons">搜尋</i>
             </button>
         </form>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg bg-success" v-show="!isShow" v-cloak>
+        <div v-on:click="Change">
+            <i class="fas fa-sync-alt" style="color: #ffa726;"></i>
+        </div>
+        <div class="dateTimeContainer">
+            <div class="myContainer">
+                <label for="startDate">起始時間</label>
+                <input class="m-2" type="date" id="startDateInput" v-model="startDate" />
+            </div>
+            <div class="myContainer">
+                <label for="endDate">結束時間</label>
+                <input class="m-2" type="date" id="endDateInput" v-model="endDate" />
+            </div>
+            <button type="submit" class="btn btn-icon btn-round" id="bigListBtn" v-on:click.prevent="Initialize(),SearchRange(1)">
+                <i class="material-icons">搜尋</i>
+            </button>
+        </div>
     </nav>
 
     <div class="table-responsive">
@@ -41,7 +63,24 @@
                     <td>{{orderData.endDate}}</td>
                     <td class="td-actions">
                         <div>
-                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteOrder()">
+                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteOrder(orderData.orderId,'single')">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody class="orderTbody" v-if="ordersResponse" v-for="orderList in ordersResponse.orderViewModels">
+                <tr v-cloak>
+                    <td class="myTd-name">{{orderList.orderId}}</td>
+                    <td>{{orderList.customerName}}</td>
+                    <td class="td-name"><a href="#">{{orderList.houseName}}</a></td>
+                    <td>{{orderList.orderDate}}</td>
+                    <td>{{orderList.startDate}}</td>
+                    <td>{{orderList.endDate}}</td>
+                    <td class="td-actions">
+                        <div>
+                            <button type="button" class="btn btn-danger" v-on:click.prevent="DeleteOrder(orderList.orderId,'List')">
                                 <i class="far fa-trash-alt"></i>
                             </button>
                         </div>
@@ -50,11 +89,34 @@
             </tbody>
         </table>
     </div>
+    <div v-if="ordersResponse" v-cloak>
+        <div class="page d-flex justify-content-center">
+            <nav aria-label="Page navigation example d-block">
+                <ul class="pagination rounded-circle">
+                    <li class="page-item" v-show="page != 1">
+                        <button class="text-dark" v-on:click.prevent="Initialize(),SearchRange(page - 1)">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                    </li>
+                    <li class="page-item" v-for="item in getPage" :key="item">
+                        <button class="text-dark" v-on:click.prevent="Initialize(),SearchRange(item)" v-bind:class="{ 'active':item === page }">{{ item }}</button>
+                    </li>
+                    <li class="page-item" v-show="page != getPage">
+                        <button class="text-dark" v-on:click.prevent="Initialize(),SearchRange(page + 1)">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="subText">1 - {{ getPage }} 頁，共 {{ ordersResponse.total }} 筆訂單</div>
+    </div>
 </div>
 
 @section Scripts{
     <script>
         const orderData = null;
+        const ordersResponse = null;
         function GetOrder() {
             Vue.createApp(
                 {
@@ -62,9 +124,18 @@
                         return {
                             orderId: '',
                             orderData: orderData,
+                            isShow: true,
+                            ordersResponse: ordersResponse,
+                            startDate: '',
+                            endDate: '',
+                            page: 1,
                         }
                     },
                     methods: {
+                        Initialize: function () {
+                            this.orderData = null
+                            this.ordersResponse = null
+                        },
                         Search: function () {
                             axios({
                                 method: 'get',
@@ -76,30 +147,60 @@
                                 alert(`搜尋不到此訂單`)
                             });
                         },
-                        DeleteOrder: function () {
-                            const vm = this
+                        DeleteOrder: function (Id, Status) {
                             axios({
                                 method: 'post',
                                 url: '/api/Orders',
-                                data: { OrderId: this.orderData.orderId }
-                            }).then(function () {
-                                alert(`訂單 ${vm.orderData.orderId} 已刪除`)
+                                data: { OrderId: Id }
+                            }).then(() => {
+                                if (Status == "single") {
+                                    this.orderData = null
+                                }
+                                else {
+                                    this.ordersResponse.orderViewModels.splice(this.ordersResponse.orderViewModels.findIndex((x) => x.orderId == Id), 1)
+                                    this.ordersResponse.total -= 1
+                                }
+                                alert(`訂單 ${Id} 已刪除`)
                             }).catch((err) => console.log(err));
-                        }
+                        },
+                        Change: function () {
+                            this.isShow = !this.isShow;
+                        },
+                        SearchRange: function (page) {
+                            axios({
+                                method: 'get',
+                                url: `/api/Orders/${this.startDate}/${this.endDate}/${page}`,
+                            }).then((res) => {
+                                this.ordersResponse = res.data
+                                this.page = page
+                            }).catch((err) => {
+                                console.log(err)
+                                alert(`請選擇起始日期與結束日期`)
+                            });
+                        },
                     },
                     mounted() {
                         this.fullWidth = window.innerWidth;
                         window.onresize = () => {
                             this.fullWidth = window.innerWidth;
-                            const search = document.querySelector(".btn.btn-neutral.btn-icon.btn-round")
+                            const search = document.querySelectorAll(".btn-round")
                             if (this.fullWidth < 452) {
-                                search.innerHTML = "<i class='material-icons'>search</i>"
+                                search[0].innerHTML = "<i class='material-icons'>search</i>"
+                                search[1].innerHTML = "<i class='material-icons'>search</i>"
                             }
                             else {
-                                search.innerHTML = "<i class='material-icons'>搜尋</i>"
+                                search[0].innerHTML = "<i class='material-icons'>搜尋</i>"
+                                search[1].innerHTML = "<i class='material-icons'>搜尋</i>"
                             }
                         };
-                    }
+                    },
+                    computed: {
+                        getPage: function () {
+                            return Math.ceil(
+                                Number(this.ordersResponse.total) / 20
+                            );
+                        },
+                    },
                 }
             ).mount("#App");
         }

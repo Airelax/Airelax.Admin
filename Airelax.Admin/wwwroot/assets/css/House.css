@@ -2,6 +2,14 @@
     display: none;
 }
 
+#App {
+    margin-top: 8vh;
+}
+
+.navbar.navbar-expand-lg.bg-warning {
+    background: linear-gradient( 60deg, #ffa726, #fb8c00) !important;
+}
+
 .form-inline.ml-auto {
     margin: 0 auto;
 }
@@ -10,12 +18,14 @@
     width: 100% !important;
 }
 
-.btn.btn-neutral.btn-icon.btn-round {
+.btn.btn-icon.btn-round {
     padding: 12px;
+    background-color: #ffa726;
+    box-shadow: initial;
 }
 
 @media screen and (min-width: 452px) {
-    .btn.btn-neutral.btn-icon.btn-round {
+    .btn.btn-icon.btn-round {
         padding: 12px 30px;
     }
 }
@@ -54,6 +64,11 @@ td,
     text-align: start;
 }
 
+.td-name {
+    min-width: 200px !important;
+    white-space: normal;
+}
+
 .img-container {
     border-radius: 8px;
 }
@@ -73,10 +88,127 @@ td,
     font-size: 16px;
 }
 
-.btn.btn-simple i {
+.btn-simple i {
     transform: rotate(90deg);
 }
 
-.btn.btn-success i {
+.btn-success i {
     transform: rotate(270deg);
+}
+
+/**/
+.navbar {
+    height: 25vh !important;
+}
+
+    .navbar.navbar-expand-lg.bg-success {
+        width: 100%;
+        background: linear-gradient( 60deg, #66bb6a, #43a047) !important;
+        justify-content: center;
+    }
+
+.dateTimeContainer {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+    .dateTimeContainer label {
+        line-height: normal;
+        color: #fff;
+        margin: 0 0 0 8px;
+    }
+
+.myContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+#bigListBtn {
+    background-color: #66bb6a;
+    position: absolute;
+    right: -36px;
+    bottom: -36px;
+}
+
+.fas.fa-sync-alt {
+    font-size: 20px;
+    position: absolute;
+    top: -11px;
+    left: 10px;
+    z-index: 1030;
+}
+
+    .fas.fa-sync-alt:active {
+        transform: rotate(360deg);
+        transition-duration: .5s;
+    }
+
+.text-dark {
+    width: 33px;
+    height: 33px;
+    line-height: normal;
+    text-align: center;
+    position: relative;
+    display: block;
+    margin-left: 0;
+    border: 1px solid transparent;
+    border-radius: 5%;
+}
+
+.active {
+    color: #fff !important;
+    background-color: #9c27b0;
+}
+
+.subText {
+    text-align: center;
+}
+
+@media screen and (min-width: 281px) {
+    #bigListBtn {
+        right: -43px;
+        bottom: 8px;
+    }
+}
+
+@media screen and (min-width: 452px) {
+    .myContainer {
+        display: initial;
+    }
+
+    .dateTimeContainer {
+        align-items: end;
+    }
+
+        .dateTimeContainer label {
+            margin: initial;
+        }
+
+    #bigListBtn {
+        width: fit-content;
+        margin-right: 8px;
+        padding: 12px 30px;
+        position: initial;
+    }
+}
+
+@media screen and (min-width: 688px) {
+    #App {
+        margin-top: initial;
+    }
+
+    .navbar {
+        height: initial !important;
+    }
+
+    .dateTimeContainer {
+        height: 54px;
+        display: initial;
+    }
+
+    #bigListBtn {
+        margin-right: initial;
+        margin-top: 4px;
+    }
 }

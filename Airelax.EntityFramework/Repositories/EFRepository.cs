@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Airelax.Domain.DomainObject;
+using Airelax.Domain.Houses;
 using Airelax.Domain.RepositoryInterface;
 using Airelax.EntityFramework.DbContexts;
 using Lazcat.Infrastructure.DependencyInjection;

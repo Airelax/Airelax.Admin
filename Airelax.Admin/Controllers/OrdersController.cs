@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Airelax.Admin.Models;
 using Airelax.Domain;
-using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-
+using System;
+using Airelax.Admin.Defines;
 
 namespace Airelax.Admin.Controllers
 {
@@ -24,6 +24,15 @@ namespace Airelax.Admin.Controllers
         public async Task<OrderViewModel> GetOrder(string id)
         {
             return await _orderService.GetOrderAsync(id);
+        }
+
+        [HttpGet]
+        [Route("{startDate}/{endDate}/{page}")]
+        public SearchOrdersResponse GetRangeOrder(DateTime startDate, DateTime endDate, int page)
+        {
+            var orderInput = new IncomeInput { StartDate = startDate, EndDate = endDate, Page = page };
+            var orderLists = _orderService.GetRangeOrder(orderInput);
+            return orderLists;
         }
 
         [HttpPost]
